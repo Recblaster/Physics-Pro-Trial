@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Master Physics with AI-Powered Flashcards">
+    <title>PhysicsPro - Master Physics with AI-Powered Flashcards</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f59e0b;
+            --background: #0f0f23;
+            --surface: rgba(255, 255, 255, 0.05);
+            --surface-hover: rgba(255, 255, 255, 0.1);
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --accent: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --success: #22c55e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b69 100%);
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(2deg); }
+            66% { transform: translateY(-20px) rotate(-1deg); }
+        }
+
+        /* Glass Effects */
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            background: var(--surface-hover);
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px 0;
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--glass);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+        }
+
+        .btn-secondary:hover {
+            background: var(--surface-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 140px 0 100px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            backdrop-filter: blur(20px);
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        /* Features Grid */
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .chapters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 32px;
+            margin-top: 60px;
+        }
+
+        .chapter-card {
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chapter-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .chapter-card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .chapter-list {
+            list-style: none;
+        }
+
+        .chapter-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .chapter-item:hover {
+            color: var(--primary);
+            padding-left: 12px;
+        }
+
+        .chapter-item:last-child {
+            border-bottom: none;
+        }
+
+        .chapter-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            flex: 1;
+            transition: color 0.3s ease;
+        }
+
+        .chapter-link:hover {
+            color: var(--primary);
+        }
+
+        .premium-badge {
+            padding: 4px 8px;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--warning) 100%);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+        }
+
+        .free-badge {
+            padding: 4px 8px;
+            background: linear-gradient(135deg, var(--success) 0%, var(--accent) 100%);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* Benefits Grid */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-top: 60px;
+        }
+
+        .benefit-card {
+            padding: 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .benefit-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .benefit-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .benefit-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+            margin-top: 60px;
+        }
+
+        .testimonial-card {
+            padding: 32px;
+            position: relative;
+        }
+
+        .testimonial-quote {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .author-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+        }
+
+        .author-info h4 {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .author-info p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Pricing */
+        .pricing-card {
+            max-width: 500px;
+            margin: 60px auto 0;
+            padding: 48px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--warning) 100%);
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .pricing-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .price {
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .price-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .features-list {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 32px;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            color: var(--text-secondary);
+        }
+
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--success) 0%, var(--accent) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+        }
+
+        .modal-content {
+            background: var(--glass);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 48px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .modal-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .modal-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        /* FAQ */
+        .faq-container {
+            max-width: 800px;
+            margin: 60px auto 0;
+        }
+
+        .faq-item {
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+        }
+
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 24px;
+            text-align: left;
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: color 0.3s ease;
+        }
+
+        .faq-question:hover {
+            color: var(--primary);
+        }
+
+        .faq-icon {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-answer p {
+            padding: 0 24px 24px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            padding: 60px 0 30px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .footer p {
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .chapters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .benefits-grid,
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+            }
+            
+            .chapter-card {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-animation"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="#" class="logo">⚡ PhysicsPro</a>
+            <ul class="nav-links">
+                <li><a href="#features">Chapters</a></li>
+                <li><a href="#benefits">Benefits</a></li>
+                <li><a href="#testimonials">Reviews</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+            <a href="#pricing" class="btn btn-primary">Get Started</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-badge">
+                ✨ Limited Time: 25% OFF for Early Birds
+            </div>
+            <h1>Master Physics with Smart Flashcards</h1>
+            <p class="hero-subtitle">
+                AI-powered flashcards designed for 11th & 12th grade students. Learn faster, remember longer, and ace your physics exams with confidence.
+            </p>
+            <div class="hero-cta">
+                <a href="#pricing" class="btn btn-primary">Start Learning Now</a>
+                <a href="#features" class="btn btn-secondary">Explore Chapters</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Complete Syllabus Coverage</h2>
+                <p class="section-subtitle">Every topic, formula, and concept you need to master physics</p>
+            </div>
+
+            <div class="chapters-grid">
+                <div class="chapter-card glass-card">
+                    <h3>📚 Grade 11th Physics</h3>
+                    <ul class="chapter-list">
+                        <li class="chapter-item">
+                            <a href="11th/1. UNITS AND DIMENSIONS.html" target="_blank" class="chapter-link">Units and Dimensions</a>
+                            <span class="free-badge">FREE</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Kinematics and 2D Motion</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Newton's Laws of Motion</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Work, Power & Energy</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">System of Particles & Rotation</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Gravitation</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Mechanical Properties</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Thermal Properties</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Thermodynamics</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Oscillations & Waves</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="chapter-card glass-card">
+                    <h3>🔬 Grade 12th Physics</h3>
+                    <ul class="chapter-list">
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Electrostatics</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Current Electricity</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Magnetic Effects</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <a href="12th/4. Electromagnetic Induction.html" target="_blank" class="chapter-link">Electromagnetic Induction</a>
+                            <span class="free-badge">FREE</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Alternating Current</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">EM Waves</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Ray & Wave Optics</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Dual Nature of Matter</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Modern Physics</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                        <li class="chapter-item">
+                            <span class="chapter-link premium-trigger">Semiconductor Electronics</span>
+                            <span class="premium-badge">PRO</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="benefits" class="section">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Why Students Love PhysicsPro</h2>
+                <p class="section-subtitle">Scientifically proven methods to boost your physics performance</p>
+            </div>
+
+            <div class="benefits-grid">
+                <div class="benefit-card glass-card">
+                    <div class="benefit-icon">⚡</div>
+                    <h3>Lightning Fast Revision</h3>
+                    <p>Review entire chapters in minutes, not hours. Perfect for last-minute exam preparation and quick refreshers.</p>
+                </div>
+                <div class="benefit-card glass-card">
+                    <div class="benefit-icon">🧠</div>
+                    <h3>Enhanced Memory Retention</h3>
+                    <p>Active recall techniques proven to improve long-term retention by up to 300% compared to traditional reading.</p>
+                </div>
+                <div class="benefit-card glass-card">
+                    <div class="benefit-icon">🎯</div>
+                    <h3>Exam-Focused Content</h3>
+                    <p>Curated by physics experts to focus on high-yield topics that frequently appear in board and competitive exams.</p>
+                </div>
+                <div class="benefit-card glass-card">
+                    <div class="benefit-icon">📱</div>
+                    <h3>Study Anywhere</h3>
+                    <p>Access your flashcards on any device. Study during commute, breaks, or wherever you have a few spare minutes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="section">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Success Stories</h2>
+                <p class="section-subtitle">Join thousands of students who've improved their physics grades</p>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card glass-card">
+                    <p class="testimonial-quote">"These flashcards are incredible! My physics score improved by 25% in just one month. The content is so well-organized and easy to memorize."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">AS</div>
+                        <div class="author-info">
+                            <h4>Anjali Singh</h4>
+                            <p>Class 12, CBSE Board</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card glass-card">
+                    <p class="testimonial-quote">"Finally, a study resource that actually works! I used to spend hours making my own notes. PhysicsPro saved me so much time and the quality is outstanding."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">RV</div>
+                        <div class="author-info">
+                            <h4>Rohan Verma</h4>
+                            <p>JEE Aspirant, Grade 12</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card glass-card">
+                    <p class="testimonial-quote">"The best investment I made for my board exams. Modern physics and optics became so much easier to understand and remember with these flashcards."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">PK</div>
+                        <div class="author-info">
+                            <h4>Priya Krishnan</h4>
+                            <p>Class 11, State Board</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="section">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Unlock Your Physics Potential</h2>
+                <p class="section-subtitle">One-time payment, lifetime access to all content</p>
+            </div>
+
+            <div class="pricing-card glass-card">
+                <div class="pricing-badge">25% OFF</div>
+                <h3 class="pricing-title">PhysicsPro Complete</h3>
+                <div class="price">₹1,499</div>
+                <p class="price-subtitle">One-time payment • Lifetime access</p>
+                
+                <ul class="features-list">
+                    <li>
+                        <span class="check-icon">✓</span>
+                        Complete 11th & 12th Grade Syllabus
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        500+ High-Quality Flashcards
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        Interactive Web Version + PDF
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        Printable Format Included
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        Free Future Updates
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        24/7 Access on All Devices
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        7-Day Money Back Guarantee
+                    </li>
+                </ul>
+
+                <a href="#" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                    🚀 Start Mastering Physics Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="section">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <p class="section-subtitle">Everything you need to know about PhysicsPro</p>
+            </div>
+
+            <div class="faq-container">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        What format are the flashcards in?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>You'll receive both an interactive web version (accessible on any device) and a high-quality PDF version that you can download and print. The web version includes animations and interactive features for enhanced learning.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Is this really a one-time purchase?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes! Pay once and get lifetime access to all current and future content. No subscriptions, no recurring fees. You'll also receive all future updates and new chapters completely free.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Can I try before buying?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely! Check out our free sample chapter "Units and Dimensions" to experience the quality firsthand. We also offer a 7-day money-back guarantee if you're not completely satisfied.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        How quickly will I receive access?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Instantly! Within seconds of your purchase, you'll receive an email with your login credentials and download links. Start studying immediately on any device.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Which curriculum does this cover?
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Our flashcards cover CBSE, NCERT, and most state board curricula for grades 11 & 12. The content is also excellent preparation for JEE, NEET, and other competitive exams.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 PhysicsPro. All rights reserved. Made with ⚡ for physics students worldwide.</p>
+        </div>
+    </footer>
+
+    <!-- Premium Modal -->
+    <div id="premium-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div class="modal-icon">🔓</div>
+            <h3 class="modal-title">Unlock All Chapters</h3>
+            <p class="modal-subtitle">Get instant access to all 24 chapters and start acing your physics exams today. Your success is just one click away!</p>
+            <a href="#pricing" class="btn btn-primary" style="width: 100%; justify-content: center;" id="modal-cta">
+                🚀 Get Full Access Now
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize animations
+            anime.timeline({
+                easing: 'easeOutExpo',
+                duration: 1000
+            })
+            .add({
+                targets: '.hero-badge',
+                opacity: [0, 1],
+                translateY: [30, 0],
+                duration: 800
+            })
+            .add({
+                targets: '.hero h1',
+                opacity: [0, 1],
+                translateY: [50, 0],
+                duration: 1000
+            }, '-=600')
+            .add({
+                targets: '.hero-subtitle',
+                opacity: [0, 1],
+                translateY: [30, 0],
+                duration: 800
+            }, '-=400')
+            .add({
+                targets: '.hero-cta .btn',
+                opacity: [0, 1],
+                translateY: [30, 0],
+                delay: anime.stagger(100),
+                duration: 600
+            }, '-=200');
+
+            // Scroll animations for cards
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        anime({
+                            targets: entry.target,
+                            opacity: [0, 1],
+                            translateY: [50, 0],
+                            scale: [0.9, 1],
+                            duration: 800,
+                            easing: 'easeOutCubic'
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all cards
+            document.querySelectorAll('.glass-card, .benefit-card, .testimonial-card').forEach(card => {
+                card.style.opacity = '0';
+                observer.observe(card);
+            });
+
+            // Premium Modal Logic
+            const modal = document.getElementById('premium-modal');
+            const modalContent = modal.querySelector('.modal-content');
+            const premiumTriggers = document.querySelectorAll('.premium-trigger, .premium-badge');
+            const closeButton = modal.querySelector('.modal-close');
+            const ctaButton = document.getElementById('modal-cta');
+
+            const openModal = () => {
+                modal.style.display = 'flex';
+                anime({
+                    targets: modal,
+                    opacity: [0, 1],
+                    duration: 300,
+                    easing: 'easeInOutQuad'
+                });
+                anime({
+                    targets: modalContent,
+                    scale: [0.8, 1],
+                    opacity: [0, 1],
+                    duration: 400,
+                    easing: 'easeOutBack'
+                });
+            };
+
+            const closeModal = () => {
+                anime({
+                    targets: modal,
+                    opacity: [1, 0],
+                    duration: 300,
+                    easing: 'easeInOutQuad',
+                    complete: () => {
+                        modal.style.display = 'none';
+                    }
+                });
+                anime({
+                    targets: modalContent,
+                    scale: [1, 0.8],
+                    opacity: [1, 0],
+                    duration: 300,
+                    easing: 'easeInBack'
+                });
+            };
+
+            premiumTriggers.forEach(trigger => {
+                trigger.addEventListener('click', openModal);
+            });
+
+            closeButton.addEventListener('click', closeModal);
+            ctaButton.addEventListener('click', closeModal);
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            // FAQ Accordion
+            document.querySelectorAll('.faq-question').forEach(question => {
+                question.addEventListener('click', () => {
+                    const faqItem = question.parentElement;
+                    const answer = faqItem.querySelector('.faq-answer');
+                    const isActive = faqItem.classList.contains('active');
+
+                    // Close all other FAQ items
+                    document.querySelectorAll('.faq-item.active').forEach(item => {
+                        if (item !== faqItem) {
+                            item.classList.remove('active');
+                            item.querySelector('.faq-answer').style.maxHeight = '0';
+                        }
+                    });
+
+                    // Toggle current item
+                    if (!isActive) {
+                        faqItem.classList.add('active');
+                        answer.style.maxHeight = answer.scrollHeight + 'px';
+                    } else {
+                        faqItem.classList.remove('active');
+                        answer.style.maxHeight = '0';
+                    }
+                });
+            });
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Floating animation for benefit cards
+            document.querySelectorAll('.benefit-card').forEach((card, index) => {
+                anime({
+                    targets: card,
+                    translateY: [0, -10, 0],
+                    duration: 3000 + (index * 200),
+                    loop: true,
+                    easing: 'easeInOutSine',
+                    delay: index * 400
+                });
+            });
+
+            // Parallax effect for background
+            window.addEventListener('scroll', () => {
+                const scrolled = window.pageYOffset;
+                const rate = scrolled * -0.5;
+                const bgAnimation = document.querySelector('.bg-animation');
+                if (bgAnimation) {
+                    bgAnimation.style.transform = `translateY(${rate}px)`;
+                }
+            });
+
+            // Add loading animations to pricing card
+            setTimeout(() => {
+                anime({
+                    targets: '.pricing-card .features-list li',
+                    opacity: [0, 1],
+                    translateX: [-30, 0],
+                    delay: anime.stagger(100),
+                    duration: 600,
+                    easing: 'easeOutQuad'
+                });
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JEE Advanced Study Flashcards: Electromagnetic Induction</title>
+    <style>
+        :root {
+            --primary-color: #00695c; /* Teal for Magnetism/Induction */
+            --secondary-color: #546e7a; 
+            --accent-color: #ffb300; /* Amber for accent */
+            --card-bg-front: linear-gradient(145deg, #00695c 0%, #004d40 100%); 
+            --card-bg-back: #ffffff;
+            --text-color-front: #ffffff;
+            --text-color-back: #263238; 
+            --code-bg-color: #e0f2f1; 
+            --code-text-color: #00695c; 
+            --font-family: 'Merriweather', 'Georgia', serif;
+            
+            --card-width: 420px; 
+            --card-height: 350px; 
+
+            --border-radius: 18px;
+            --box-shadow-idle: 0 10px 22px rgba(0,0,0,0.09), 0 4px 9px rgba(0,0,0,0.07);
+            --box-shadow-hover: 0 14px 30px rgba(0,0,0,0.12), 0 10px 12px rgba(0,0,0,0.09);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-family);
+            background-color: #e0f2f1; /* Light Teal background */
+            color: var(--text-color-back);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 30px;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 800px; 
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 2.7em; 
+            font-weight: 700; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.03);
+        }
+        header p {
+            color: var(--secondary-color);
+            margin-bottom: 40px;
+            text-align: center;
+            font-size: 1.25em; 
+        }
+
+        .flashcard-deck {
+            perspective: 2200px; 
+            margin-bottom: 30px;
+            width: var(--card-width);
+            height: var(--card-height);
+        }
+
+        .flashcard {
+            width: 100%; height: 100%; position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1); 
+            cursor: pointer; border-radius: var(--border-radius);
+        }
+        .flashcard:focus { outline: 3px solid var(--accent-color); outline-offset: 4px; }
+        .flashcard.is-flipped { transform: rotateY(180deg); }
+
+        .flashcard-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; -webkit-backface-visibility: hidden;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow-idle);
+            display: flex; 
+            flex-direction: column; 
+            padding: 28px;
+            text-align: center; 
+            overflow-y: auto; 
+            transition: box-shadow 0.3s ease;
+        }
+        .flashcard:hover .flashcard-face { box-shadow: var(--box-shadow-hover); }
+
+        .flashcard-front {
+            background: var(--card-bg-front); 
+            color: var(--text-color-front);
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;   
+        }
+        .flashcard-front h2 { font-size: 1.7em; margin-bottom: 18px; font-weight: 600; line-height: 1.3;}
+        .flashcard-front p.hint { font-size: 1em; opacity: 0.88; font-style: italic; }
+
+        .flashcard-back {
+            background-color: var(--card-bg-back); color: var(--text-color-back);
+            transform: rotateY(180deg);
+            justify-content: flex-start; 
+            align-items:stretch; 
+            font-size: 0.95em; 
+            line-height: 1.7; 
+            position: relative; 
+        }
+        .flashcard-back > div.main-card-back-content {
+            text-align: left;
+            width: 100%;
+            flex-grow: 1; 
+            overflow-y: auto; 
+            padding-bottom: 55px; 
+        }
+        
+        .flashcard-face::-webkit-scrollbar { width: 7px; }
+        .flashcard-face::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); border-radius: 10px; }
+        .flashcard-back div.main-card-back-content::-webkit-scrollbar-thumb { background-color: var(--secondary-color); opacity:0.7; border-radius: 10px; border: 2px solid var(--card-bg-back); }
+        .flashcard-front::-webkit-scrollbar-thumb { background-color: #fff; opacity:0.5; border-radius: 10px; border: 2px solid var(--card-bg-front); } 
+        .flashcard-face::-webkit-scrollbar-thumb:hover { opacity: 1; }
+        .flashcard-face { scrollbar-width: thin; scrollbar-color: var(--secondary-color) rgba(0,0,0,0.02); }
+
+        .flashcard-back strong.main-question { color: #004d40; display: block; margin-bottom: 15px; font-size: 1.15em; font-weight: 600; text-align:center;}
+        
+        .answer-label { color: var(--accent-color); font-weight: bold; margin-top: 12px; margin-bottom: 8px; display: block; font-size: 1.1em; }
+        .answer-content p { margin-bottom: 8px;}
+        .answer-content ul { list-style-position: outside; padding-left:20px; margin-top: 5px;}
+        .answer-content ul li { margin-bottom: 5px; list-style-type: disc; }
+
+        .flashcard-back code { 
+            background-color: var(--code-bg-color); 
+            color: var(--code-text-color); 
+            padding: 4px 8px; 
+            border-radius: 5px; 
+            font-family: 'Consolas', 'Courier New', Courier, monospace; 
+            font-size: 0.95em; 
+        }
+        
+        .learn-more-btn {
+            position: absolute; bottom: 18px; right: 18px;
+            background-color: var(--primary-color); color: white; border: none; padding: 9px 14px; 
+            border-radius: 22px; font-size: 0.9em; font-weight: 500; cursor: pointer;
+            transition: background-color 0.25s ease, transform 0.15s ease;
+            z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .learn-more-btn:hover { background-color: #004d40; transform: scale(1.03); box-shadow: 0 3px 6px rgba(0,0,0,0.15); } 
+
+        .navigation-controls { display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 25px; width: 100%; }
+        .nav-button, .shuffle-button { background-color: var(--primary-color); color: white; border: none; padding: 14px 26px; border-radius: 30px; cursor: pointer; font-size: 1em; font-weight: 500; transition: all 0.25s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        .nav-button:hover, .shuffle-button:hover { background-color: #004d40; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.12); } 
+        .nav-button:disabled { background-color: #80cbc4; cursor: not-allowed; opacity: 0.7; transform: none; box-shadow: none; }
+        .card-counter { font-size: 1.1em; color: var(--secondary-color); font-weight: 500; min-width: 120px; text-align: center; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+        .modal-content { background-color: #fff; padding: 35px; border-radius: var(--border-radius); box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 90%; max-width: 850px; max-height: 90vh; overflow-y: auto; position: relative; animation: fadeInModal 0.35s ease-out; }
+        @keyframes fadeInModal { from { opacity: 0; transform: translateY(-25px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-close-btn { position: absolute; top: 18px; right: 22px; background: transparent; border: none; font-size: 1.8em; color: var(--secondary-color); cursor: pointer; padding: 5px; line-height: 1; transition: all 0.2s ease; }
+        .modal-close-btn:hover { color: #333; transform: scale(1.1);}
+        #modalTheoryContent h2 { font-size: 1.8em; color: var(--primary-color); margin-bottom: 22px; border-bottom: 2px solid #b2dfdb; padding-bottom: 12px;}
+        #modalTheoryContent h3 { font-size: 1.4em; color: #004d40; margin-top: 28px; margin-bottom: 14px;}
+        #modalTheoryContent h4 { font-size: 1.2em; color: #00695c; margin-top: 22px; margin-bottom: 10px; font-weight:700;}
+        #modalTheoryContent p { margin-bottom: 14px; line-height: 1.75; font-size: 1em; color: #37474f;}
+        #modalTheoryContent ul, #modalTheoryContent ol { list-style-position: outside; margin-left: 25px; margin-bottom: 18px; padding-left:5px;}
+        #modalTheoryContent li { margin-bottom: 9px; line-height: 1.65; }
+        #modalTheoryContent code { background-color: var(--code-bg-color); color: var(--code-text-color); padding: 3px 7px; border-radius: 4px; border: 1px solid #b2dfdb; font-size: 0.95em; font-family: 'Consolas', 'Courier New', Courier, monospace; }
+        #modalTheoryContent .important-formula { display: block; background-color: #e0f2f1; border-left: 4px solid var(--accent-color); padding: 12px 18px; margin: 15px 0; font-family: 'Courier New', Courier, monospace; font-size: 1.05em; color: #004d40; text-align: center; border-radius: 4px; }
+        #modalTheoryContent .note { font-style: italic; color: #004d40; background-color: #f1f8e9; font-size: 0.95em; margin-top: 10px; padding: 10px; border-left: 3px solid var(--secondary-color); border-radius: 4px; }
+        #modalTheoryContent img { max-width: 90%; height: auto; display: block; margin: 15px auto; border: 1px solid #ccc; border-radius: 8px; }
+        .modal-content::-webkit-scrollbar { width: 8px; }
+        .modal-content::-webkit-scrollbar-track { background: #f1f1f1; border-radius:10px; }
+        .modal-content::-webkit-scrollbar-thumb { background: #bdbdbd; border-radius: 10px;}
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>JEE Advanced Study Flashcards</h1>
+            <p>Electromagnetic Induction</p>
+        </header>
+        <div class="flashcard-deck">
+            <div class="flashcard" id="flashcard" tabindex="0"> 
+                <div class="flashcard-face flashcard-front" id="flashcardFront"></div>
+                <div class="flashcard-face flashcard-back" id="flashcardBack"></div>
+            </div>
+        </div>
+        <div class="navigation-controls">
+            <button class="nav-button" id="prevBtn" aria-label="Previous Card">Previous</button>
+            <span class="card-counter" id="cardCounter" aria-live="polite">Card 1 of 15</span>
+            <button class="nav-button" id="nextBtn" aria-label="Next Card">Next</button>
+        </div>
+        <button class="shuffle-button" id="shuffleBtn" aria-label="Shuffle Cards">Shuffle Cards</button>
+    </div>
+    <div id="detailedViewModal" class="modal-overlay">
+        <div class="modal-content">
+            <button id="closeModalBtn" class="modal-close-btn" aria-label="Close detailed view">&times;</button>
+            <div id="modalTheoryContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const flashcardData = [
+            {
+                front: { title: "Magnetic Flux (Φ<sub>B</sub>)", hint: "The amount of magnetic field passing through a surface." },
+                back: { main: "Define Magnetic Flux (Φ<sub>B</sub>) and give its formula and SI unit.", answer_content: `<p><strong>Magnetic Flux (Φ<sub>B</sub>):</strong> A measure of the total number of magnetic field lines passing through a given surface.</p><p>For a uniform field <strong>B</strong> and plane area <strong>A</strong>: <code>Φ<sub>B</sub> = BA cosθ = <strong>B</strong> ⋅ <strong>A</strong></code></p><p>General case: <code>Φ<sub>B</sub> = ∫ <strong>B</strong> ⋅ d<strong>A</strong></code></p><p>Scalar. SI unit: <strong>Weber (Wb)</strong>. 1 Wb = 1 T·m².</p>` },
+                detailedTheory: `<h2>Magnetic Flux (Φ<sub>B</sub>)</h2><p>Magnetic flux is the foundational concept for understanding electromagnetic induction. It quantifies the amount of magnetic field that penetrates a given surface.</p><h3>Definition</h3><p>Qualitatively, magnetic flux can be thought of as the number of magnetic field lines passing through a surface. Quantitatively, it is defined as follows:</p><h4>For a Uniform Magnetic Field</h4><p>If a uniform magnetic field <strong>B</strong> passes through a flat plane surface of area A, the flux is:<div class="important-formula"><code>Φ<sub>B</sub> = BA cosθ</code></div><p>where θ is the angle between the magnetic field vector <strong>B</strong> and the area vector <strong>A</strong> (which is normal to the surface). In vector notation, this is the dot product:</p><div class="important-formula"><code>Φ<sub>B</sub> = <strong>B</strong> ⋅ <strong>A</strong></code></div><ul><li>Flux is maximum when the field is perpendicular to the surface (θ=0°).</li><li>Flux is zero when the field is parallel to the surface (θ=90°).</li></ul><h4>For a General Case</h4><p>For a non-uniform field or a curved surface, the total flux is found by integrating the flux through infinitesimal area elements d<strong>A</strong>:</p><div class="important-formula"><code>Φ<sub>B</sub> = ∫<sub>Surface</sub> <strong>B</strong> ⋅ d<strong>A</strong></code></div><h3>Key Properties</h3><ul><li><strong>Scalar Quantity:</strong> Although defined using vectors, flux itself is a scalar.</li><li><strong>SI Unit:</strong> The Weber (Wb). 1 Wb = 1 Tesla·meter² (T·m²).</li><li><strong>Dimensional Formula:</strong> [ML²T⁻²A⁻¹].</li></ul><h4>JEE Relevance</h4><p>Magnetic flux is the starting point for Faraday's Law. You must be able to calculate flux for simple geometries and understand that a change in flux can be caused by altering B, A, or θ.</p>`
+            },
+            {
+                front: { title: "Faraday's Law of Induction", hint: "The link between changing magnetic flux and EMF." },
+                back: { main: "State Faraday's Law of Induction and provide its mathematical formula.", answer_content: `<p><strong>Faraday's Law:</strong> The magnitude of the induced EMF (ε) in any closed circuit is directly proportional to the rate of change of the magnetic flux (Φ<sub>B</sub>) through that circuit.</p><p>For a single loop: <code>ε = - dΦ<sub>B</sub> / dt</code></p><p>For a coil with N turns:<p class="formula"><code>ε = -N (dΦ<sub>B</sub> / dt)</code></p>The negative sign is due to Lenz's Law.</p>` },
+                detailedTheory: `<h2>Faraday's Law of Electromagnetic Induction</h2><p>This law describes how a changing magnetic environment creates an electric field, leading to an induced EMF.</p><h3>Statement of the Law</h3><div class="important-formula"><em>The magnitude of the induced EMF (electromotive force) in a closed loop is equal to the time rate of change of the magnetic flux through that loop.</em></div><h3>Mathematical Formulation</h3><p>For a single conducting loop, the induced EMF (ε) is given by:</p><div class="important-formula"><code>ε = - dΦ<sub>B</sub> / dt</code></div><ul><li><code>ε</code> is the induced EMF (in Volts).</li><li><code>dΦ<sub>B</sub>/dt</code> is the rate of change of magnetic flux (in Wb/s).</li><li>The negative sign is a consequence of Lenz's Law and indicates the direction of the induced current.</li></ul><h4>For a Coil with N Turns:</h4><p>The total induced EMF is the sum of the EMFs in each turn:</p><div class="important-formula"><code>ε = -N (dΦ<sub>B</sub> / dt)</code></div><h3>Ways to Induce an EMF</h3><p>Since <code>Φ<sub>B</sub> = BA cosθ</code>, an EMF is induced by changing: B, A, or θ.</p><h4>JEE Relevance</h4><p>Faraday's Law is the core quantitative tool of EMI. Almost all numerical problems in the chapter involve calculating dΦ<sub>B</sub>/dt to find the induced EMF.</p>`
+            },
+            {
+                front: { title: "Lenz's Law & Conservation of Energy", hint: "The induced current opposes its cause." },
+                back: { main: "State Lenz's Law and explain how it is a consequence of the conservation of energy.", answer_content: `<p><strong>Lenz's Law:</strong> The direction of the induced current in a circuit is such that it creates a magnetic field that opposes the change in magnetic flux that produced it.</p><p><strong>Conservation of Energy:</strong> The opposition requires an external agent to do work to create the change in flux. This mechanical work is converted into electrical energy in the circuit, thus conserving energy. If the induced current aided the change, it would lead to a perpetual motion machine, violating conservation of energy.</p>` },
+                detailedTheory: `<h2>Lenz's Law & Conservation of Energy</h2><h3>Statement of Lenz's Law</h3><div class="important-formula"><em>The polarity of the induced EMF is such that it tends to produce a current which opposes the change in magnetic flux that produced it.</em></div><p>In essence, nature fights back against a change in magnetic flux. This is the physical meaning of the negative sign in Faraday's law, <code>ε = -dΦ<sub>B</sub>/dt</code>.</p><h3>Application of Lenz's Law:</h3><ol><li>Determine the initial magnetic flux (Φ<sub>initial</sub>) and its direction.</li><li>Determine how the flux is changing (increasing or decreasing).</li><li>Determine the direction of the induced magnetic field (B<sub>induced</sub>) needed to oppose this change.</li><li>Use the Right-Hand Grip Rule to find the direction of induced current (I<sub>induced</sub>) that would produce B<sub>induced</sub>.</li></ol><h3>Lenz's Law and Conservation of Energy</h3><p>Lenz's Law is a direct consequence of the principle of conservation of energy. If the induced current aided the change, it would create more change, inducing more current, creating energy from nothing. To conserve energy, the induced current *must* oppose the change. This means an external agent must do work against this opposing force. This mechanical work is converted into the electrical energy of the induced current (I²R heating).</p><h4>JEE Relevance</h4><p>Lenz's Law is critical for conceptual questions involving the direction of induced current in loops, a staple of both JEE Main and Advanced.</p>`
+            },
+            {
+                front: { title: "Motional EMF (Translational)", hint: "EMF from a conductor moving in a B-field." },
+                back: { main: "Derive the induced EMF (ε) in a conductor of length L moving with velocity v in a uniform B field.", answer_content: `<p><strong>Lorentz Force Method:</strong> The magnetic Lorentz force on free electrons is <code><strong>F</strong> = q(<strong>v</strong> × <strong>B</strong>)</code>. This pushes electrons to one end, creating an internal electric field <strong>E</strong><sub>in</sub>.</p><p>In equilibrium, electric force balances magnetic force: <code>qE<sub>in</sub> = qvB</code>. So, <code>E<sub>in</sub> = vB</code>. The EMF across length L is:<p class="formula"><code>ε = E<sub>in</sub>L = BvL</code></p>(assuming <strong>B</strong>, <strong>v</strong>, and the conductor are mutually perpendicular).</p>` },
+                detailedTheory: `<h2>Motional EMF (Translational)</h2><p>Motional EMF is induced in a conductor moving through a magnetic field.</p><h3>Derivation using Magnetic Lorentz Force</h3><p>Consider a straight conductor of length L moving with constant velocity <strong>v</strong> perpendicular to a uniform magnetic field <strong>B</strong>.
+<ol><li>The free electrons in the conductor also move with velocity <strong>v</strong>.</li><li>They experience a magnetic Lorentz force: <code><strong>F</strong><sub>m</sub> = q(<strong>v</strong> × <strong>B</strong>)</code>.</li><li>This force pushes electrons to one end of the rod, creating a charge separation and an internal electric field <strong>E</strong><sub>in</sub>.</li><li>Equilibrium is reached when the electric force <strong>F</strong><sub>e</sub> = q<strong>E</strong><sub>in</sub> balances the magnetic force. Thus, <code>qE<sub>in</sub> = qvB</code>, or <code>E<sub>in</sub> = vB</code>.</li><li>This uniform electric field creates a potential difference across the ends of the conductor. This potential difference is the induced EMF (ε).</li></ol><div class="important-formula"><code>ε = E<sub>in</sub> * L = BvL</code></div><p>For the general case where the angle between <strong>v</strong> and <strong>B</strong> is θ, and the angle between the conductor and <strong>v</strong> is α, the formula is <code>ε = BvL sinθ sinα</code>.</p><h3>Derivation using Faraday's Law</h3><p>If the rod slides on rails forming a closed loop, the area of the loop changes. Let the rod move a distance dx in time dt. The change in flux is <code>dΦ<sub>B</sub> = B dA = B(Ldx)</code>. From Faraday's Law, <code>|ε| = dΦ<sub>B</sub>/dt = B(Ldx)/dt = BLv</code>. This confirms the result.</p><h4>JEE Relevance</h4><p>Fundamental concept. Problems often involve calculating the induced current (I=ε/R), the force required to keep the rod moving (F = BIL), and the power dissipated (P=Fv).</p>`
+            },
+            {
+                front: { title: "Motional EMF (Rotational)", hint: "EMF from a rotating conductor." },
+                back: { main: "Derive the induced EMF in a conducting rod of length L rotating with angular velocity ω about one end in a uniform B field.", answer_content: `<p>Consider a small element dr of the rod at distance r from the pivot. Its linear velocity is v = ωr. The small EMF induced in this element is <code>dε = Bvdr = B(ωr)dr</code>.
+                <br>Total EMF is the integral from r=0 to L:
+                <code>ε = &int;₀<sup>L</sup> Bωr dr = Bω[r²/2]₀<sup>L</sup></code></p>
+                <p class="formula"><code>ε = (1/2)BωL²</code></p>` },
+                detailedTheory: `<h2>Motional EMF (Rotational)</h2><p>An EMF is induced in a conductor rotating in a magnetic field because different parts move with different linear velocities.</p><h3>Derivation for a Rod Rotating About its End</h3><p>Consider a rod of length L rotating with angular velocity ω about a pivot at one end, in a uniform magnetic field B perpendicular to the plane of rotation.</p><ol><li>A small element dr at a distance r from the pivot has a linear velocity v = ωr.</li><li>The motional EMF induced across this small element is <code>dε = Bvdr = B(ωr)dr</code>.</li><li>All these small elemental EMFs act in the same direction (like cells in series). The total EMF is found by integrating from the pivot (r=0) to the end (r=L):
+<br><code>ε = &int;dε = &int;₀<sup>L</sup> Bωr dr = Bω [r²/2]₀<sup>L</sup></code></li></ol><div class="important-formula"><code>ε = (1/2)BωL²</code></div><h4>Other Scenarios</h4><ul><li><strong>Rod rotating about its center:</strong> Net EMF between the two ends is zero, but there is a potential difference of (1/8)BωL² between the center and each end.</li><li><strong>Rotating Disc (Faraday Disc):</strong> The EMF induced between the center and the rim is <code>ε = (1/2)BωR²</code>, where R is the disc radius.</li></ul><h4>JEE Relevance</h4><p>A classic JEE Advanced problem type. Questions often involve calculating the current, power, or external torque required to maintain rotation.</p>`
+            },
+            {
+                front: { title: "Eddy Currents", hint: "Circulating currents induced in bulk conductors." },
+                back: { main: "What are Eddy Currents? List applications and disadvantages.", answer_content: `<p><strong>Eddy Currents (Foucault Currents):</strong> Circulating currents induced in bulk conductors when the magnetic flux linked with them changes.</p><h4>Disadvantages & Minimization:</h4><ul><li>Cause unwanted heating (I²R loss) in cores of transformers/motors. Minimized by using a laminated core.</li></ul><h4>Applications:</h4><ul><li>Magnetic Braking, Induction Furnaces, Electromagnetic Damping in galvanometers.</li></ul>` },
+                detailedTheory: `<h2>Eddy Currents</h2><h3>Definition</h3><div class="important-formula"><em>Eddy currents are circulating currents induced in bulk pieces of conductors when they are placed in a changing magnetic field.</em></div><p>Their direction is given by Lenz's Law and they flow in closed loops within the conductor. They are also known as Foucault currents.</p><h3>Demonstration and Effects</h3><p>Swinging a solid metal plate through a strong magnetic field induces large eddy currents. By Lenz's law, these currents create a magnetic field that opposes the motion, causing a strong damping force. If slots are cut into the plate, the paths for eddy currents are reduced, and the damping effect weakens significantly.</p><h3>Unwanted Effects and Minimization</h3><p>Eddy currents are often undesirable as they dissipate energy as heat (Joule heating). This is a source of energy loss in devices like transformers and motors. To minimize this, the metal cores are <strong>laminated</strong> (made of thin sheets insulated from each other) to break up the conducting paths and reduce the magnitude of the currents.</p><h3>Applications</h3><ol><li><strong>Magnetic Braking:</strong> In high-speed trains, electromagnets induce eddy currents in the metal rails, creating a strong, smooth braking force.</li><li><strong>Induction Furnace:</strong> A rapidly alternating magnetic field induces large eddy currents in a metal, generating enough heat to melt it.</li><li><strong>Electromagnetic Damping:</strong> Used in galvanometers to make the coil come to rest quickly.</li></ol><h4>JEE Relevance</h4><p>This is a conceptual topic. Questions focus on the origin of eddy currents, how to minimize them, and their applications.</p>`
+            },
+            {
+                front: { title: "Self-Inductance (L)", hint: "The property of a coil to oppose changes in current." },
+                back: { main: "Define Self-Inductance (L) and its two related formulas.", answer_content: `<p><strong>Self-Induction:</strong> A phenomenon where a changing current in a coil induces a back EMF in the coil itself, opposing the change.</p><p><strong>Self-Inductance (L)</strong> is the measure of this property. It is defined in two ways:</p><ol><li>As flux linkage per unit current: <code>L = NΦ<sub>B</sub> / I</code></li><li>As induced EMF per unit rate of change of current: <p class="formula"><code>ε = -L(dI/dt)</code></p></li></ol><p>L is also called electrical inertia. SI Unit: <strong>Henry (H)</strong>.</p>` },
+                detailedTheory: `<h2>Self-Inductance (L)</h2><h3>Concept</h3><p>When current in a circuit changes, the magnetic flux it produces through itself also changes. By Faraday's Law, this induces an EMF in the circuit. This phenomenon is <strong>self-induction</strong>.</p><div class="important-formula"><em>Self-induction is the property of a circuit by which it opposes any change in the current flowing through it by inducing an EMF in itself.</em></div><p>This induced EMF is called a <strong>back EMF</strong>, as Lenz's Law dictates it must oppose the change causing it.</p><h3>Coefficient of Self-Inductance (L)</h3><p>Self-inductance, L, is a quantitative measure of this property.</p><h4>Definition 1: Based on Flux Linkage</h4><p>The total magnetic flux linkage (NΦ<sub>B</sub>) through a coil is proportional to the current (I) that produces it.
+<br><code>NΦ<sub>B</sub> = LI</code> &rArr; <div class="important-formula"><code>L = NΦ<sub>B</sub> / I</code></div></p><h4>Definition 2: Based on Induced EMF</h4><p>From Faraday's Law, <code>ε = -d(NΦ<sub>B</sub>)/dt</code>. Substituting from the above definition: <code>ε = -d(LI)/dt</code>. If L is constant, this gives:</p><div class="important-formula"><code>ε = -L(dI/dt)</code></div><p>This is the most common working formula for an inductor.</p><h3>Key Points</h3><ul><li><strong>Electrical Inertia:</strong> Inductance opposes a *change* in current, just as mass opposes a *change* in velocity.</li><li><strong>SI Unit:</strong> The Henry (H). 1 H = 1 V·s/A.</li><li>L depends only on the geometry (size, shape, number of turns) and the core material's permeability.</li></ul><h4>JEE Relevance</h4><p>Essential for analyzing LR, LC, and LCR circuits. The formula ε=-L(dI/dt) is fundamental.</p>`
+            },
+            {
+                front: { title: "Self-Inductance of a Solenoid", hint: "L = μ₀n²Al" },
+                back: { main: "Derive the expression for the self-inductance (L) of a long solenoid.", answer_content: `<p>For a long solenoid with n turns/length, length l, and area A:</p><ol><li>Magnetic field inside: <code>B = μ₀nI</code></li><li>Flux through one turn: <code>Φ₁ = BA = μ₀nIA</code></li><li>Total flux linkage with N=nl turns: <code>NΦ₁ = (nl)(μ₀nIA) = μ₀n²AlI</code></li><li>From L = NΦ₁/I:</li></ol><p class="formula"><code>L = μ₀n²Al</code></p>` },
+                detailedTheory: `<h2>Self-Inductance of a Long Solenoid</h2><p>A "long" solenoid is one whose length is much greater than its radius, allowing us to assume a uniform internal magnetic field.</p><h3>Derivation</h3><p>Consider a solenoid of length <strong>l</strong>, cross-sectional area <strong>A</strong>, with <strong>n</strong> turns per unit length (total turns N=nl).</p><ol><li><strong>Magnetic Field:</strong> A current I produces a uniform magnetic field inside: <code>B = μ₀nI</code>.</li><li><strong>Flux through a Single Turn:</strong> <code>Φ₁ = B × A = μ₀nIA</code>.</li><li><strong>Total Magnetic Flux Linkage:</strong> We multiply the flux per turn by the total number of turns, N: <br><code>NΦ₁ = (nl) × (μ₀nIA) = μ₀n²AlI</code>.</li><li><strong>Calculate Self-Inductance (L):</strong> Using the definition <code>L = NΦ₁ / I</code>:<br><code>L = (μ₀n²AlI) / I</code></li></ol><div class="important-formula"><code>L = μ₀n²Al</code></div><p>Or in terms of total turns N: <code>L = μ₀N²A/l</code>.</p><h4>JEE Relevance</h4><p>This is a standard derivation. The formula is often used in circuit problems where an inductor is described by its physical parameters.</p>`
+            },
+            {
+                front: { title: "Mutual-Inductance (M)", hint: "Inducing EMF in a neighboring circuit." },
+                back: { main: "Define Mutual-Inductance (M).", answer_content: `<p><strong>Mutual Induction:</strong> A changing current in a primary coil induces an EMF in a nearby secondary coil.</p><p><strong>Mutual Inductance (M)</strong> quantifies this effect.</p><ol><li>As flux linkage per unit primary current: <code>M = N₂Φ₂ / I₁</code></li><li>As induced EMF per unit rate of change of primary current:<p class="formula"><code>ε₂ = -M(dI₁/dt)</code></p></li></ol><p>SI Unit: Henry (H). Reciprocity Theorem: M₁₂ = M₂₁ = M.</p>` },
+                detailedTheory: `<h2>Mutual Inductance (M)</h2><h3>Concept</h3><p>When two coils are near each other, a changing current in the primary coil (1) creates a changing magnetic flux through the secondary coil (2), inducing an EMF in it. This is <strong>mutual induction</strong>.</p><h3>Coefficient of Mutual Inductance (M)</h3><p>M is defined in two equivalent ways:</p><h4>1. Based on Flux Linkage:</h4><p>The total flux linkage in the secondary (N₂Φ₂) is proportional to the current in the primary (I₁).</p><div class="important-formula"><code>M = N₂Φ₂ / I₁</code></div><h4>2. Based on Induced EMF:</h4><p>The EMF induced in the secondary (ε₂) is given by Faraday's Law.</p><div class="important-formula"><code>ε₂ = -M(dI₁/dt)</code></div><h3>Key Points</h3><ul><li><strong>Reciprocity Theorem:</strong> M₁₂ = M₂₁. The effect is mutual and symmetric.</li><li><strong>SI Unit:</strong> The Henry (H).</li><li>M depends on the geometry, size, number of turns, and relative placement of both coils.</li></ul><h4>JEE Relevance</h4><p>Essential for understanding transformers. Problems involve calculating M for simple geometries (like coaxial solenoids) and using the EMF formula.</p>`
+            },
+            {
+                front: { title: "Mutual-Inductance of Coaxial Solenoids", hint: "Calculating M for a standard setup." },
+                back: { main: "Derive the mutual inductance of two long coaxial solenoids.", answer_content: `<p>Let inner solenoid S₁ have n₁, r₁, A₁ and outer S₂ have n₂, r₂, A₂. Both have length l.</p><p>1. Assume current I₁ in S₁. Field B₁ = μ₀n₁I₁ inside S₁, zero outside.
+                <br>2. Flux through one turn of S₂ is Φ₂₁ = B₁A₁ = (μ₀n₁I₁) * (πr₁²). Note: we use area of inner coil.
+                <br>3. Total flux in S₂ is N₂Φ₂₁ = (n₂l)(μ₀n₁I₁πr₁²).
+                <br>4. <code>M = (N₂Φ₂₁) / I₁</code></p><p class="formula"><code>M = μ₀n₁n₂πr₁²l = μ₀n₁n₂A₁l</code></p>` },
+                detailedTheory: `<h2>Mutual-Inductance of Two Long Coaxial Solenoids</h2><h3>Setup</h3><p>Consider two long, coaxial solenoids. The inner (primary) solenoid S₁ has radius r₁ and n₁ turns/length. The outer (secondary) solenoid S₂ has n₂ turns/length. Both have length l.</p><h3>Derivation</h3><ol><li>Assume current I₁ flows in the primary solenoid S₁.</li><li>This creates a uniform magnetic field inside S₁: <code>B₁ = μ₀n₁I₁</code>. This field is zero outside S₁.</li><li>This field passes through the secondary coil. The flux through each turn of S₂ depends only on the area of S₁ (since B=0 outside S₁). <br><code>Φ₂₁ = B₁ × Area<sub>inner</sub> = (μ₀n₁I₁) × (πr₁²)</code>.</li><li>The total flux linked with S₂ is the flux per turn times the number of turns in S₂ (N₂ = n₂l):<br><code>Total Flux = N₂Φ₂₁ = (n₂l)(μ₀n₁I₁πr₁²)</code>.</li><li>By definition, <code>M = Total Flux in S₂ / Current in S₁</code>:</li></ol><div class="important-formula"><code>M = μ₀n₁n₂πr₁²l</code></div><p>The formula depends on the geometry of both coils but specifically on the area of the inner coil.</p><h4>JEE Relevance</h4><p>This is the standard derivation for mutual inductance. Understanding why the area of the inner coil is used is a key conceptual point.</p>`
+            },
+            {
+                front: { title: "Energy Stored in an Inductor", hint: "U = ½LI²" },
+                back: { main: "Derive the magnetic potential energy stored in an inductor. Define magnetic energy density.", answer_content: `<p>The source does work against the back EMF (ε = LdI/dt) to establish a current.</p><p>Instantaneous power needed is <code>P = |ε|I = LI(dI/dt)</code>.
+                <br>Work done dU = Pdt = LI dI.
+                <br>Total energy U for current 0 to I is <code>U = &int;₀<sup>I</sup> LI' dI'</code></p>
+                <p class="formula"><code>U = (1/2)LI²</code></p><p><strong>Magnetic Energy Density (u<sub>B</sub>):</strong> Energy per unit volume.<p class="formula"><code>u<sub>B</sub> = B² / (2μ₀)</code></p></p>` },
+                detailedTheory: `<h2>Energy Stored in an Inductor</h2><p>An inductor stores energy in its magnetic field when current flows through it. This energy is analogous to the electric field energy stored in a capacitor.</p><h3>Derivation</h3><p>The source must do work against the back EMF <code>ε = L(dI/dt)</code> to establish the current. The instantaneous power required is <code>P = |ε|I = LI(dI/dt)</code>. The work done dU in time dt is <code>dU = P dt = LI dI</code>. The total energy U to build the current from 0 to a final value I is the integral:</p><div class="important-formula"><code>U = &int;₀<sup>I</sup> LI' dI' = (1/2)LI²</code></div><h3>Magnetic Energy Density (u<sub>B</sub>)</h3><p>This is the magnetic energy stored per unit volume. For a solenoid, we use U = ½LI² and substitute L=μ₀n²Al and I=B/μ₀n. This simplifies to U = (B²/(2μ₀)) * (Al). Since volume is Al, the energy density is:</p><div class="important-formula"><code>u<sub>B</sub> = B² / (2μ₀)</code></div><p>This formula is general and applies to any magnetic field.</p><h4>JEE Relevance</h4><p>Both formulas are very important. Problems often involve calculating the energy stored, the rate of energy storage in LR circuits, or concepts in LC oscillations where energy oscillates between the capacitor and inductor.</p>`
+            },
+            {
+                front: { title: "LR Circuits (Growth of Current)", hint: "Current rises exponentially." },
+                back: { main: "Analyze a DC LR circuit during current growth. State the equation for I(t) and the time constant τ.", answer_content: `<p>In a series LR circuit with an EMF source ε, applying KVL gives: <code>ε - IR - L(dI/dt) = 0</code>.</p><p>Solving this differential equation for current I(t) starting from I=0 at t=0 gives:</p><p class="formula"><code>I(t) = I₀(1 - e<sup>-t/τ</sup>)</code></p><p>where <strong>I₀ = ε/R</strong> is the final steady-state current and the <strong>time constant τ = L/R</strong>. At t=τ, the current reaches ~63.2% of its final value.</p>` },
+                detailedTheory: `<h2>LR Circuits: Growth of Current</h2><p>When a switch is closed in a circuit containing an inductor and resistor, the inductor's back EMF prevents the current from rising instantaneously.</p><h3>Analysis using Kirchhoff's Loop Law (KVL)</h3><p>Applying KVL to the circuit: <code>ε - V<sub>R</sub> - V<sub>L</sub> = 0</code>.
+<br>This gives the differential equation:</p><div class="important-formula"><code>ε - IR - L(dI/dt) = 0</code></div><h3>Solution of the Equation</h3><p>Solving this first-order linear differential equation with the initial condition I=0 at t=0 yields the equation for current growth:</p><div class="important-formula"><code>I(t) = (ε/R)(1 - e<sup>-Rt/L</sup>)</code></div><p>We define <strong>I₀ = ε/R</strong> as the final, maximum current (when the inductor acts like a wire), and the <strong>time constant τ = L/R</strong>.</p><div class="important-formula"><code>I(t) = I₀(1 - e<sup>-t/τ</sup>)</code></div><h3>Time Constant (τ)</h3><p>The time constant τ=L/R represents the time it takes for the current to rise to (1 - 1/e) ≈ 63.2% of its maximum value. A larger τ means a slower current rise.</p><h4>JEE Relevance</h4><p>Crucial for circuit analysis. Problems often ask for the current at a specific time, the time constant, the time to reach a certain fraction of I₀, or the rate of change of current dI/dt.</p>`
+            },
+            {
+                front: { title: "LR Circuits (Decay of Current)", hint: "Current falls exponentially." },
+                back: { main: "Analyze a DC LR circuit during current decay. State the equation for I(t).", answer_content: `<p>If a circuit with a steady current I₀ is shorted by removing the battery, the stored energy in the inductor drives the current, which decays through the resistor.</p><p>KVL gives: <code>-IR - L(dI/dt) = 0</code>.</p><p>Solving this differential equation gives the current decay equation:</p><p class="formula"><code>I(t) = I₀e<sup>-t/τ</sup></code></p><p>The time constant is still <strong>τ = L/R</strong>. At t=τ, the current falls to ~36.8% of its initial value.</p>` },
+                detailedTheory: `<h2>LR Circuits: Decay of Current</h2><p>Consider an LR circuit with a steady current I₀. If the EMF source is removed and the circuit remains closed, the energy stored in the inductor's magnetic field will be dissipated as heat in the resistor, causing the current to decay.</p><h3>Analysis using KVL</h3><p>With the battery removed, the loop contains only the inductor and resistor. The inductor's back EMF now acts as the source driving the current. KVL gives: <code>-IR - L(dI/dt) = 0</code>.</p><p><code>L(dI/dt) = -IR</code></p><h3>Solution of the Equation</h3><p>Solving this differential equation with the initial condition I=I₀ at t=0 gives the equation for exponential decay:</p><div class="important-formula"><code>I(t) = I₀e<sup>-Rt/L</sup> = I₀e<sup>-t/τ</sup></code></div><h3>Time Constant (τ)</h3><p>The time constant τ=L/R represents the time in which the current decays to 1/e (≈36.8%) of its initial value.</p><h4>JEE Relevance</h4><p>The decay formula is as important as the growth formula. Problems are similar but involve the decay process. The key concept is that an inductor resists *changes* in current, so it tries to keep the current flowing even after the source is removed.</p>`
+            },
+            {
+                front: { title: "LC Oscillations", hint: "Electromagnetic analogy of a spring-mass system." },
+                back: { main: "Explain LC Oscillations. What is the natural frequency of oscillation?", answer_content: `<p>An LC circuit, with a charged capacitor and an inductor, exhibits oscillations as energy sloshes back and forth between the capacitor's electric field (like potential energy) and the inductor's magnetic field (like kinetic energy).</p><p>By applying KVL, we get the differential equation: <code>d²q/dt² + (1/LC)q = 0</code>.
+                <br>This is the equation for SHM, with <code>ω² = 1/LC</code>.</p>
+                <p>The natural angular frequency of oscillation is:<p class="formula"><code>ω₀ = 1 / √(LC)</code></p>` },
+                detailedTheory: `<h2>LC Oscillations</h2><p>An ideal LC circuit (containing only an inductor L and a capacitor C) undergoes free electromagnetic oscillations. It is the electrical analog of a frictionless spring-mass system.</p><h3>Analogy</h3><ul><li>Inductor (L) &harr; Mass (m)</li><li>Capacitor (C) &harr; Inverse of Spring Constant (1/k)</li><li>Charge (q) &harr; Displacement (x)</li><li>Current (I) &harr; Velocity (v)</li><li>Magnetic Energy (½LI²) &harr; Kinetic Energy (½mv²)</li><li>Electric Energy (½q²/C) &harr; Potential Energy (½kx²)</li></ul><h3>Working of the Oscillation</h3><ol><li><strong>t=0:</strong> Capacitor is fully charged (q=Q₀). All energy is electric (U<sub>E</sub>).</li><li>Capacitor discharges, current (I) increases, building a magnetic field in the inductor. U<sub>E</sub> converts to magnetic energy U<sub>B</sub>.</li><li><strong>t=T/4:</strong> Capacitor is fully discharged (q=0). Current is maximum (I₀). All energy is magnetic (U<sub>B</sub>).</li><li>Inductor's collapsing field keeps current flowing, charging the capacitor with opposite polarity. U<sub>B</sub> converts back to U<sub>E</sub>.</li></ol><h3>Derivation of Natural Frequency</h3><p>Applying KVL to the LC loop: <code>V<sub>L</sub> + V<sub>C</sub> = 0</code><br><code>L(dI/dt) + q/C = 0</code>
+<br>Since I = dq/dt, dI/dt = d²q/dt².
+<br><code>L(d²q/dt²) + (1/C)q = 0</code> &rArr; <code>d²q/dt² + (1/LC)q = 0</code>
+<br>This is the differential equation for SHM with <code>ω² = 1/LC</code>. The natural angular frequency is:</p><div class="important-formula"><code>ω₀ = 1 / √(LC)</code></div><h4>JEE Relevance</h4><p>A very important topic for JEE Advanced. Problems often involve finding maximum charge/current, energy at specific times, or analyzing the system using the SHM analogy.</p>`
+            },
+            {
+                front: { title: "AC Generator (Dynamo)", hint: "Rotating coil in a B-field." },
+                back: { main: "Explain the principle and derive the equation for the EMF produced by an AC generator.", answer_content: `<p><strong>Principle:</strong> Works on electromagnetic induction. When a coil is rotated in a uniform magnetic field, the magnetic flux through it changes continuously, inducing a sinusoidal EMF.</p><p><strong>Derivation:</strong> Flux through a coil with N turns and area A, rotating with angular velocity ω in field B is: <code>Φ<sub>B</sub> = NBA cos(ωt)</code>.
+                <br>Using Faraday's Law, <code>ε = -dΦ<sub>B</sub>/dt = -d/dt[NBA cos(ωt)]</code></p><p class="formula"><code>ε = NBAω sin(ωt)</code></p><p>This is an alternating EMF, with peak value <code>ε₀ = NBAω</code>.</p>` },
+                detailedTheory: `<h2>The AC Generator (Dynamo)</h2><p>An AC generator is a device that converts mechanical energy into electrical energy (in the form of alternating current) using electromagnetic induction.</p><h3>Principle</h3><p>When a coil is rotated in a uniform magnetic field, the angle θ between the magnetic field and the area vector of the coil changes with time. This causes a continuous change in the magnetic flux linked with the coil, which in turn induces an EMF according to Faraday's Law.</p><h3>Derivation of Induced EMF</h3><ol><li>Let a coil of N turns and area A rotate with a constant angular velocity ω.</li><li>At time t, the angle between the B-field and the area vector is θ = ωt.</li><li>The magnetic flux Φ<sub>B</sub> through a single turn is <code>Φ<sub>B</sub> = BA cosθ = BA cos(ωt)</code>.</li><li>Total flux linkage is <code>NΦ<sub>B</sub> = NBA cos(ωt)</code>.</li><li>By Faraday's Law, induced EMF is <code>ε = -d(NΦ<sub>B</sub>)/dt = -NBA * d/dt[cos(ωt)]</code></li><li><code>ε = -NBA * (-ω sin(ωt))</code></li></ol><div class="important-formula"><code>ε = NBAω sin(ωt)</code></div><p>Letting <code>ε₀ = NBAω</code> be the peak or maximum EMF, we get:</p><div class="important-formula"><code>ε(t) = ε₀ sin(ωt)</code></div><p>This sinusoidal EMF drives an alternating current (AC).</p><h4>JEE Relevance</h4><p>The derivation and formula are fundamental to understanding the generation of AC, which is the subsequent chapter in the syllabus. It's a key link between EMI and AC circuits.</p>`
+            }
+        ];
+
+        let currentCardIndex = 0;
+        let cards = flashcardData; 
+
+        const flashcardElement = document.getElementById('flashcard');
+        const flashcardFrontElement = document.getElementById('flashcardFront');
+        const flashcardBackElement = document.getElementById('flashcardBack');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        const cardCounterElement = document.getElementById('cardCounter');
+        
+        const detailedViewModal = document.getElementById('detailedViewModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modalTheoryContent = document.getElementById('modalTheoryContent');
+
+        function formatTextForDisplay(str) { return str; }
+
+        function formatContent(contentObj) { 
+            let html = '<div class="main-card-back-content">'; 
+            if (contentObj.main) html += `<strong class="main-question">${contentObj.main}</strong>`;
+            if (contentObj.answer_content) { html += `<div class="answer-label">Answer:</div><div class="answer-content">${contentObj.answer_content}</div>`;}
+            html += '</div>'; 
+            return html;
+        }
+
+        function displayCard(index) {
+            const card = cards[index];
+            flashcardFrontElement.innerHTML = `<h2>${card.front.title}</h2><p class="hint">${card.front.hint}</p>`;
+            flashcardFrontElement.scrollTop = 0;
+            flashcardBackElement.innerHTML = ''; 
+            flashcardBackElement.insertAdjacentHTML('beforeend', formatContent(card.back));
+            if (card.detailedTheory) {
+                const learnMoreBtn = document.createElement('button');
+                learnMoreBtn.className = 'learn-more-btn';
+                learnMoreBtn.textContent = 'Learn More 📚'; 
+                learnMoreBtn.onclick = (e) => { e.stopPropagation(); openDetailedView(index); };
+                flashcardBackElement.appendChild(learnMoreBtn); 
+            }
+            const mainContentDiv = flashcardBackElement.querySelector('.main-card-back-content');
+            if(mainContentDiv) mainContentDiv.scrollTop = 0;
+            if (flashcardElement.classList.contains('is-flipped')) flashcardElement.classList.remove('is-flipped');
+            updateCardCounter();
+            updateNavButtons();
+        }
+
+        function flipCard() { flashcardElement.classList.toggle('is-flipped'); }
+        function openDetailedView(cardIndex) {
+            modalTheoryContent.innerHTML = cards[cardIndex].detailedTheory; 
+            detailedViewModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+        }
+        function closeDetailedView() {
+            detailedViewModal.style.display = 'none';
+            document.body.style.overflow = ''; 
+        }
+        
+        function shuffleCards() {
+            for (let i = cards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cards[i], cards[j]] = [cards[j], cards[i]]; }
+            currentCardIndex = 0; 
+            displayCard(currentCardIndex);
+        }
+
+        flashcardElement.addEventListener('click', flipCard);
+        prevBtn.addEventListener('click', () => { if (currentCardIndex > 0) { currentCardIndex--; displayCard(currentCardIndex); } });
+        nextBtn.addEventListener('click', () => { if (currentCardIndex < cards.length - 1) { currentCardIndex++; displayCard(currentCardIndex); } });
+        shuffleBtn.addEventListener('click', shuffleCards);
+        closeModalBtn.addEventListener('click', closeDetailedView);
+        detailedViewModal.addEventListener('click', (event) => { if (event.target === detailedViewModal) closeDetailedView(); });
+        document.addEventListener('keydown', (event) => {
+            if (detailedViewModal.style.display === 'flex') { if (event.key === 'Escape') closeDetailedView(); return; }
+            if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
+            if (event.key === 'ArrowLeft') { prevBtn.click(); }
+            if (event.key === 'ArrowRight') { nextBtn.click(); }
+            if (event.key === ' ' || event.key === 'Enter') { if (!document.querySelector('.learn-more-btn:focus')) { event.preventDefault(); flipCard(); }}
+        });
+        
+        function updateCardCounter() { cardCounterElement.textContent = `Card ${currentCardIndex + 1} of ${cards.length}`; }
+        function updateNavButtons() { prevBtn.disabled = currentCardIndex === 0; nextBtn.disabled = currentCardIndex === cards.length - 1; }
+        
+        displayCard(currentCardIndex);
+    </script>
+</body>
+</html>
