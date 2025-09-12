@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Get Access to PhysicsPro</title>
+    <!-- You can copy the same <style> block from your main page to keep the design consistent -->
+    <link rel="stylesheet" href="style.css"> <!-- Or link to an external CSS file -->
+    <style>
+        /* A simplified version of your styles for the form */
+        body {
+            background: #0f0f23;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #a1a1aa;
+            margin-bottom: 30px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .btn {
+            padding: 15px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            background: #6366f1;
+            color: white;
+            width: 100%;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <h1>You're Almost There!</h1>
+        <p>Enter your details below. You'll be redirected to WhatsApp to confirm your request with us.</p>
+        <form id="contact-form">
+            <input type="email" id="email" placeholder="Enter your Email ID" required>
+            <input type="tel" id="phone" placeholder="Enter your Phone Number (for WhatsApp)" required>
+            <button type="submit" class="btn">Confirm and Proceed to WhatsApp</button>
+        </form>
+    </div>
+
+    <!-- The JavaScript magic happens here -->
+    <script>
+        const contactForm = document.getElementById('contact-form');
+
+        contactForm.addEventListener('submit', function (event) {
+            // 1. Prevent the form from submitting the old-fashioned way
+            event.preventDefault();
+
+            // 2. Get the data from the form fields
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+
+            // 3. Define your WhatsApp number (use country code, no + or spaces)
+            const yourNumber = '917304301192';
+
+            // 4. Create the pre-filled message
+            let message = `Hello! I'm interested in buying PhysicsPro.\n\nMy Details:\nEmail: ${email}\nNumber: ${phone}`;
+
+            // 5. Encode the message so it works in a URL
+            let encodedMessage = encodeURIComponent(message);
+
+            // 6. Create the final WhatsApp URL
+            const whatsappURL = `https://wa.me/${yourNumber}?text=${encodedMessage}`;
+
+            // 7. Redirect the user to WhatsApp
+            window.location.href = whatsappURL;
+        });
+    </script>
+</body>
+
+</html>
