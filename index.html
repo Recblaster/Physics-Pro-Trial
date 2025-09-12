@@ -8,24 +8,31 @@
     <title>PhysicsPro - Master Physics with AI-Powered Flashcards</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap');
 
         :root {
             --primary: #6366f1;
-            --primary-dark: #4f46e5;
+            --primary-dark: #4338ca;
+            --primary-light: #818cf8;
             --secondary: #f59e0b;
-            --background: #0f0f23;
-            --surface: rgba(255, 255, 255, 0.05);
-            --surface-hover: rgba(255, 255, 255, 0.1);
-            --glass: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.2);
+            --secondary-dark: #d97706;
+            --accent: #06b6d4;
+            --accent-dark: #0891b2;
+            --background: #0a0a0f;
+            --surface: rgba(255, 255, 255, 0.03);
+            --surface-hover: rgba(255, 255, 255, 0.08);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-hover: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-border-hover: rgba(255, 255, 255, 0.25);
             --text-primary: #ffffff;
             --text-secondary: #a1a1aa;
             --text-muted: #71717a;
-            --accent: #10b981;
+            --success: #10b981;
             --warning: #f59e0b;
             --error: #ef4444;
-            --success: #22c55e;
+            --glow-primary: rgba(99, 102, 241, 0.4);
+            --glow-secondary: rgba(245, 158, 11, 0.4);
         }
 
         * {
@@ -47,7 +54,7 @@
             overflow-x: hidden;
         }
 
-        /* Animated Background */
+        /* Enhanced Animated Background with Particles */
         .bg-animation {
             position: fixed;
             top: 0;
@@ -55,7 +62,11 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b69 100%);
+            background:
+                radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.15) 0%, transparent 70%),
+                radial-gradient(ellipse at top right, rgba(245, 158, 11, 0.1) 0%, transparent 70%),
+                radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.08) 0%, transparent 70%),
+                linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 30%, #16213e 60%, #0f3460 100%);
         }
 
         .bg-animation::before {
@@ -66,51 +77,108 @@
             width: 100%;
             height: 100%;
             background-image:
-                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
-            animation: float 20s ease-in-out infinite;
+                radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(245, 158, 11, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.03) 0%, transparent 60%);
+            animation: float 25s ease-in-out infinite;
+        }
+
+        .bg-animation::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.15), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(99, 102, 241, 0.3), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(245, 158, 11, 0.3), transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(16, 185, 129, 0.2), transparent);
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: sparkle 20s linear infinite;
         }
 
         @keyframes float {
 
             0%,
             100% {
-                transform: translateY(0px) rotate(0deg);
+                transform: translateY(0px) rotate(0deg) scale(1);
             }
 
-            33% {
-                transform: translateY(-30px) rotate(2deg);
+            25% {
+                transform: translateY(-20px) rotate(1deg) scale(1.02);
             }
 
-            66% {
-                transform: translateY(-20px) rotate(-1deg);
+            50% {
+                transform: translateY(-30px) rotate(-1deg) scale(0.98);
+            }
+
+            75% {
+                transform: translateY(-15px) rotate(0.5deg) scale(1.01);
             }
         }
 
-        /* Glass Effects */
-        .glass {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
+        @keyframes sparkle {
+
+            0%,
+            100% {
+                transform: translateX(0) translateY(0);
+            }
+
+            25% {
+                transform: translateX(5px) translateY(-5px);
+            }
+
+            50% {
+                transform: translateX(-3px) translateY(3px);
+            }
+
+            75% {
+                transform: translateX(3px) translateY(-3px);
+            }
         }
 
+        /* Enhanced Glass Effects */
         .glass-card {
             background: var(--glass);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 20px;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
         }
 
         .glass-card:hover {
-            background: var(--surface-hover);
-            transform: translateY(-8px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            background: var(--glass-hover);
+            border-color: var(--glass-border-hover);
+            transform: translateY(-12px) scale(1.02);
+            box-shadow:
+                0 25px 60px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
-        /* Header */
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Auto-Hiding Header */
         .header {
             position: fixed;
             top: 0;
@@ -118,9 +186,25 @@
             right: 0;
             z-index: 1000;
             padding: 20px 0;
-            background: rgba(15, 15, 35, 0.8);
-            backdrop-filter: blur(20px);
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border-bottom: 1px solid var(--glass-border);
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .header.header-hidden {
+            transform: translateY(-100%);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
         }
 
         .nav-container {
@@ -133,19 +217,28 @@
         }
 
         .logo {
-            font-size: 24px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 28px;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, var(--secondary) 100%);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            /* Tweak 1 */
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 20px var(--glow-primary));
         }
 
         .nav-links {
             display: flex;
             list-style: none;
-            gap: 32px;
+            gap: 40px;
             align-items: center;
         }
 
@@ -153,53 +246,85 @@
             text-decoration: none;
             color: var(--text-secondary);
             font-weight: 500;
-            transition: color 0.3s ease;
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            padding: 8px 16px;
+            border-radius: 12px;
         }
 
         .nav-links a:hover {
             color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
         }
 
         .nav-links a::after {
             content: '';
             position: absolute;
-            bottom: -4px;
-            left: 0;
+            bottom: -8px;
+            left: 50%;
             width: 0;
             height: 2px;
-            background: var(--primary);
-            transition: width 0.3s ease;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 1px;
         }
 
         .nav-links a:hover::after {
-            width: 100%;
+            width: 80%;
         }
 
-        /* Buttons */
+        /* Enhanced Buttons */
         .btn {
-            padding: 12px 24px;
-            border-radius: 12px;
+            padding: 14px 28px;
+            border-radius: 14px;
             font-weight: 600;
+            font-size: 15px;
             text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 10px;
             border: none;
             cursor: pointer;
-            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            /* Tweak 1 */
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 50%, var(--accent) 100%);
             color: white;
-            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+            box-shadow:
+                0 8px 32px var(--glow-primary),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.4);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow:
+                0 15px 45px var(--glow-primary),
+                0 0 0 1px rgba(255, 255, 255, 0.2),
+                0 0 30px rgba(99, 102, 241, 0.3);
         }
 
         .btn-secondary {
@@ -207,18 +332,22 @@
             color: var(--text-primary);
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         .btn-secondary:hover {
-            background: var(--surface-hover);
-            transform: translateY(-2px);
+            background: var(--glass-hover);
+            border-color: var(--glass-border-hover);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
         }
 
-        /* Hero Section */
+        /* Enhanced Hero Section */
         .hero {
-            padding: 140px 0 100px;
+            padding: 160px 0 120px;
             text-align: center;
             position: relative;
+            background: radial-gradient(ellipse at center, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
         }
 
         .hero-container {
@@ -230,48 +359,63 @@
         .hero-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
+            gap: 10px;
+            padding: 10px 20px;
             background: var(--glass);
             border: 1px solid var(--glass-border);
             border-radius: 50px;
             font-size: 14px;
+            font-weight: 500;
             color: var(--text-secondary);
-            margin-bottom: 32px;
+            margin-bottom: 40px;
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            animation: glow-pulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow-pulse {
+            0% {
+                box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+            }
+
+            100% {
+                box-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+            }
         }
 
         .hero h1 {
-            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(3.5rem, 8vw, 6.5rem);
             font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 24px;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            line-height: 1.05;
+            margin-bottom: 32px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 30%, var(--secondary) 70%, var(--text-secondary) 100%);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .hero-subtitle {
-            font-size: 20px;
+            font-size: 22px;
+            font-weight: 400;
             color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 40px;
-            line-height: 1.6;
+            max-width: 650px;
+            margin: 0 auto 50px;
+            line-height: 1.7;
         }
 
         .hero-cta {
             display: flex;
-            gap: 16px;
+            gap: 20px;
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
-            margin-bottom: 60px;
+            margin-bottom: 80px;
         }
 
-        /* Features Grid */
+        /* Generic Section Styling */
         .section {
-            padding: 100px 0;
+            padding: 120px 0;
         }
 
         .section-container {
@@ -282,37 +426,37 @@
 
         .section-header {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 80px;
         }
 
         .section-title {
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.8rem, 5vw, 4rem);
             font-weight: 800;
-            margin-bottom: 16px;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 50%, var(--text-secondary) 100%);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .section-subtitle {
-            font-size: 18px;
+            font-size: 20px;
             color: var(--text-secondary);
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
+            line-height: 1.6;
         }
 
+        /* Enhanced Chapters Section */
         .chapters-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 32px;
-            margin-top: 60px;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 40px;
         }
 
         .chapter-card {
-            padding: 32px;
-            position: relative;
-            overflow: hidden;
+            padding: 40px;
         }
 
         .chapter-card::before {
@@ -322,13 +466,14 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
         }
 
         .chapter-card h3 {
-            font-size: 24px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 28px;
             font-weight: 700;
-            margin-bottom: 24px;
+            margin-bottom: 32px;
             color: var(--text-primary);
         }
 
@@ -340,14 +485,23 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 8px;
+            /* Tweak 2 - initially hide for animation */
+            opacity: 0;
         }
 
+        .chapter-item.is-visible {
+            opacity: 1;
+        }
+
+
         .chapter-item:hover {
-            color: var(--primary);
-            padding-left: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            padding-left: 16px;
+            margin-left: -16px;
         }
 
         .chapter-item:last-child {
@@ -358,128 +512,133 @@
             color: var(--text-secondary);
             text-decoration: none;
             flex: 1;
+            font-weight: 500;
             transition: color 0.3s ease;
         }
 
-        .chapter-link:hover {
-            color: var(--primary);
-        }
-
-        .premium-badge {
-            padding: 4px 8px;
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--warning) 100%);
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            color: white;
+        .chapter-link:hover,
+        .premium-trigger:hover {
+            color: var(--primary-light);
             cursor: pointer;
         }
 
+        .premium-trigger:hover {
+            color: var(--secondary);
+        }
+
+        .premium-badge,
         .free-badge {
-            padding: 4px 8px;
-            background: linear-gradient(135deg, var(--success) 0%, var(--accent) 100%);
-            border-radius: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .premium-badge {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
         }
 
-        /* Benefits Grid */
-        .benefits-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
-            margin-top: 60px;
+        .premium-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
         }
 
-        .benefit-card {
-            padding: 32px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
+        .free-badge {
+            background: linear-gradient(135deg, var(--success) 0%, var(--accent) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
 
-        .benefit-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 24px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            border-radius: 20px;
+        /* "Why Students Love..." Section */
+        .benefits-showcase {
+            margin-top: 80px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 64px;
+            margin-bottom: 80px;
+            opacity: 0;
+        }
+
+        .benefit-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .benefit-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .benefit-icon-large {
+            flex-shrink: 0;
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(245, 158, 11, 0.1));
+            border-radius: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 56px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
-        .benefit-card h3 {
-            font-size: 20px;
+        /* Tweak 3: Hover effect and default state */
+        .benefit-item .benefit-icon-large {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 40px var(--glow-primary);
+        }
+
+        .benefit-item:hover .benefit-icon-large {
+            transform: scale(1.15) rotate(8deg);
+            /* Make hover slightly more exaggerated */
+        }
+
+
+        .benefit-text h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 32px;
             font-weight: 700;
             margin-bottom: 16px;
             color: var(--text-primary);
         }
 
-        .benefit-card p {
+        .benefit-text p {
             color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        /* Testimonials */
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 32px;
-            margin-top: 60px;
-        }
-
-        .testimonial-card {
-            padding: 32px;
-            position: relative;
-        }
-
-        .testimonial-quote {
-            font-size: 16px;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-            line-height: 1.6;
-        }
-
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .author-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: white;
-        }
-
-        .author-info h4 {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .author-info p {
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        /* Pricing */
-        .pricing-card {
+            font-size: 18px;
+            line-height: 1.7;
             max-width: 500px;
-            margin: 60px auto 0;
-            padding: 48px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .benefit-item.is-visible {
+            animation: fadeInUp 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        /* Pricing Section */
+        .pricing-card {
+            max-width: 550px;
+            margin: 80px auto 0;
+            padding: 60px 50px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
         }
 
         .pricing-card::before {
@@ -489,76 +648,297 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
         }
 
         .pricing-badge {
             position: absolute;
-            top: 24px;
-            right: 24px;
-            padding: 8px 16px;
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--warning) 100%);
+            top: 30px;
+            right: 30px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
             border-radius: 50px;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 700;
             color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
         }
 
         .pricing-title {
-            font-size: 24px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 28px;
             font-weight: 700;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             color: var(--text-primary);
         }
 
         .price {
-            font-size: 48px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 56px;
             font-weight: 900;
             color: var(--text-primary);
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .price-subtitle {
             color: var(--text-secondary);
-            margin-bottom: 32px;
+            margin-bottom: 40px;
+            font-size: 16px;
         }
 
         .features-list {
             list-style: none;
             text-align: left;
-            margin-bottom: 32px;
+            margin-bottom: 40px;
         }
 
+        /* Tweak 2 */
         .features-list li {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 8px 0;
+            gap: 16px;
+            padding: 12px 0;
             color: var(--text-secondary);
+            font-size: 16px;
+            opacity: 0;
+            /* Initially hide for animation */
         }
 
+        .features-list li.is-visible {
+            opacity: 1;
+        }
+
+
         .check-icon {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             background: linear-gradient(135deg, var(--success) 0%, var(--accent) 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 14px;
+            font-weight: 700;
             color: white;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Roadmap Section */
+        .roadmap-container {
+            position: relative;
+            max-width: 850px;
+            margin: 100px auto 0;
+        }
+
+        .roadmap-line {
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            bottom: 20px;
+            width: 6px;
+            background: var(--surface);
+            z-index: 1;
+            transform: translateX(-50%);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .roadmap-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary), var(--secondary), var(--accent));
+            animation: fill-line 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes fill-line {
+            from {
+                transform: translateY(-100%);
+            }
+
+            to {
+                transform: translateY(0%);
+            }
+        }
+
+        .roadmap-item {
+            padding: 15px 50px;
+            position: relative;
+            width: 50%;
+            margin-bottom: 60px;
+            opacity: 0;
+        }
+
+        .roadmap-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .roadmap-item.is-visible {
+            opacity: 1;
+        }
+
+        .roadmap-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .roadmap-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .roadmap-item::after {
+            content: '';
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            right: -14px;
+            background-color: var(--background);
+            border: 4px solid var(--primary);
+            top: 25px;
+            border-radius: 50%;
+            z-index: 2;
+            transition: all 0.4s ease;
+            animation: pulse 3s infinite ease-in-out;
+            box-shadow: 0 0 20px var(--glow-primary);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 20px var(--glow-primary);
+            }
+
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 30px var(--glow-secondary);
+            }
+        }
+
+        .roadmap-item:hover::after {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+            animation: none;
+            transform: scale(1.2);
+        }
+
+        .roadmap-item:nth-child(even)::after {
+            left: -14px;
+        }
+
+        .roadmap-content {
+            padding: 32px 40px;
+        }
+
+        @keyframes slideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInFromRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .roadmap-item:nth-child(odd).is-visible .roadmap-content {
+            animation: slideInFromLeft 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        .roadmap-item:nth-child(even).is-visible .roadmap-content {
+            animation: slideInFromRight 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        .roadmap-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .roadmap-icon {
+            display: inline-block;
+            margin-right: 16px;
+            font-size: 24px;
+        }
+
+        .roadmap-header h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .roadmap-content p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .roadmap-status {
+            padding: 6px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 2px solid transparent;
             flex-shrink: 0;
         }
 
-        /* Modal */
+        .in-progress {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .planned {
+            background: transparent;
+            border-color: var(--secondary);
+            color: var(--secondary);
+        }
+
+        .exploring {
+            background: transparent;
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Modal, FAQ, Footer */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             display: none;
             align-items: center;
             justify-content: center;
@@ -568,80 +948,94 @@
 
         .modal-content {
             background: var(--glass);
-            backdrop-filter: blur(30px);
             border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 48px;
-            max-width: 500px;
+            border-radius: 32px;
+            padding: 60px;
+            max-width: 550px;
             width: 90%;
             text-align: center;
             position: relative;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
         }
 
         .modal-close {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
+            top: 25px;
+            right: 25px;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
             color: var(--text-secondary);
             font-size: 24px;
             cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .modal-close:hover {
-            color: var(--text-primary);
-        }
-
-        .modal-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 24px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            border-radius: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+            transform: rotate(90deg);
+        }
+
+        .modal-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 32px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 15px 40px var(--glow-primary);
         }
 
         .modal-title {
-            font-size: 28px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 32px;
             font-weight: 800;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             color: var(--text-primary);
         }
 
         .modal-subtitle {
             color: var(--text-secondary);
-            margin-bottom: 32px;
-            line-height: 1.6;
+            margin-bottom: 40px;
+            line-height: 1.7;
+            font-size: 16px;
         }
 
-        /* FAQ */
         .faq-container {
-            max-width: 800px;
-            margin: 60px auto 0;
+            max-width: 850px;
+            margin: 80px auto 0;
         }
 
         .faq-item {
             border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            margin-bottom: 16px;
+            border-radius: 20px;
+            margin-bottom: 20px;
             overflow: hidden;
             background: var(--glass);
-            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: var(--glass-border-hover);
         }
 
         .faq-question {
             width: 100%;
             background: none;
             border: none;
-            padding: 24px;
+            padding: 30px;
             text-align: left;
             color: var(--text-primary);
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
@@ -651,12 +1045,12 @@
         }
 
         .faq-question:hover {
-            color: var(--primary);
+            color: var(--primary-light);
         }
 
         .faq-icon {
-            font-size: 20px;
-            transition: transform 0.3s ease;
+            font-size: 24px;
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
         .faq-item.active .faq-icon {
@@ -666,22 +1060,33 @@
         .faq-answer {
             max-height: 0;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: max-height 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
 
         .faq-answer p {
-            padding: 0 24px 24px;
+            padding: 0 30px 30px;
             color: var(--text-secondary);
-            line-height: 1.6;
+            line-height: 1.7;
+            font-size: 16px;
         }
 
-        /* Footer */
         .footer {
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(20px);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(25px);
             border-top: 1px solid var(--glass-border);
-            padding: 60px 0 30px;
-            text-align: center;
+            padding: 60px 0 40px;
+            margin-top: 80px;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
         }
 
         .footer-content {
@@ -692,29 +1097,150 @@
 
         .footer p {
             color: var(--text-muted);
+            font-size: 16px;
         }
 
-        /* Responsive */
+        /* === FAQ Anchor Link Styling === */
+        .faq-answer a {
+            color: var(--primary-light);
+            font-weight: 600;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-decoration-thickness: 1.5px;
+            text-underline-offset: 4px;
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .faq-answer a:hover {
+            color: var(--secondary);
+            text-decoration-style: solid;
+            text-shadow: 0 0 10px var(--glow-secondary);
+        }
+
+        /* === FINAL TWEAK FOR FOOTER CENTERING & STYLING === */
+        .footer {
+            /* This property is the key to centering the text */
+            text-align: center;
+        }
+
+        .footer p .heart {
+            color: rgb(0, 255, 0);
+            /* A nice red color for the heart */
+            display: inline-block;
+            margin: 0 4px;
+            animation: heartbeat 1.5s infinite ease-in-out;
+        }
+
+        @keyframes heartbeat {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        /* Responsive Fixes */
         @media (max-width: 768px) {
+            .nav-container {
+                gap: 16px;
+            }
+
+            .logo {
+                font-size: 24px;
+                /* Tweak 1 */
+            }
+
+            .header .btn {
+                padding: 10px 16px;
+                /* Tweak 1 */
+                font-size: 14px;
+            }
+
             .nav-links {
                 display: none;
             }
 
             .chapters-grid {
                 grid-template-columns: 1fr;
+                gap: 30px;
             }
 
-            .benefits-grid,
-            .testimonials-grid {
-                grid-template-columns: 1fr;
+            .chapter-card {
+                padding: 30px;
             }
 
             .hero-cta {
                 flex-direction: column;
             }
 
-            .chapter-card {
-                padding: 24px;
+            .benefit-item,
+            .benefit-item:nth-child(even) {
+                flex-direction: column;
+                gap: 40px;
+                text-align: center;
+            }
+
+            .benefit-icon-large {
+                width: 120px;
+                height: 120px;
+                font-size: 48px;
+            }
+
+            .benefit-text h3 {
+                font-size: 26px;
+            }
+
+            .benefit-text p {
+                max-width: 100%;
+                font-size: 16px;
+            }
+
+            .roadmap-line {
+                left: 28px;
+                transform: translateX(0);
+            }
+
+            .roadmap-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 15px;
+            }
+
+            .roadmap-item:nth-child(even) {
+                left: 0;
+            }
+
+            .roadmap-item::after {
+                left: 14px;
+            }
+
+            .modal-content {
+                padding: 40px 30px;
+            }
+
+            .section {
+                padding: 80px 0;
+            }
+
+            .pricing-card {
+                padding: 40px 24px;
+                /* Reduced side padding */
+            }
+
+            .pricing-card .btn-primary {
+                /* Make the button stretch edge-to-edge */
+                margin-left: -24px;
+                margin-right: -24px;
+                margin-bottom: -40px;
+                /* Sits flush at the bottom */
+                width: calc(100% + 48px);
+                /* 100% + (2 * new padding) */
+                border-radius: 0 0 20px 20px;
+                /* Match the card's bottom corners */
             }
         }
     </style>
@@ -723,21 +1249,18 @@
 <body>
     <div class="bg-animation"></div>
 
-    <!-- Header -->
     <header class="header">
         <div class="nav-container">
             <a href="#" class="logo">⚡ PhysicsPro</a>
             <ul class="nav-links">
                 <li><a href="#features">Chapters</a></li>
                 <li><a href="#benefits">Benefits</a></li>
-                <li><a href="#testimonials">Reviews</a></li>
                 <li><a href="#faq">FAQ</a></li>
             </ul>
             <a href="#pricing" class="btn btn-primary">Get Started</a>
         </div>
     </header>
 
-    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-container">
             <div class="hero-badge">
@@ -755,7 +1278,6 @@
         </div>
     </section>
 
-    <!-- Features Section -->
     <section id="features" class="section">
         <div class="section-container">
             <div class="section-header">
@@ -763,14 +1285,12 @@
                 <p class="section-subtitle">Every topic, formula, and concept you need to master physics. With learn
                     more feature and interactive content.</p>
             </div>
-
             <div class="chapters-grid">
                 <div class="chapter-card glass-card">
                     <h3>📚 Grade 11th Physics</h3>
                     <ul class="chapter-list">
                         <li class="chapter-item">
-                            <a href="11th/1. UNITS AND DIMENSIONS.html" target="_blank" class="chapter-link">Units and
-                                Dimensions</a>
+                            <a href="11th/1. UNITS AND DIMENSIONS.html" class="chapter-link">Units and Dimensions</a>
                             <span class="free-badge">FREE</span>
                         </li>
                         <li class="chapter-item">
@@ -819,7 +1339,6 @@
                         </li>
                     </ul>
                 </div>
-
                 <div class="chapter-card glass-card">
                     <h3>🔬 Grade 12th Physics</h3>
                     <ul class="chapter-list">
@@ -836,8 +1355,8 @@
                             <span class="premium-badge">PRO</span>
                         </li>
                         <li class="chapter-item">
-                            <a href="12th/4. Electromagnetic Induction.html" target="_blank"
-                                class="chapter-link">Electromagnetic Induction</a>
+                            <a href="12th/4. Electromagnetic Induction.html" class="chapter-link">Electromagnetic
+                                Induction</a>
                             <span class="free-badge">FREE</span>
                         </li>
                         <li class="chapter-item">
@@ -878,185 +1397,142 @@
         </div>
     </section>
 
-    <!-- Benefits Section -->
     <section id="benefits" class="section">
         <div class="section-container">
             <div class="section-header">
                 <h2 class="section-title">Why Students Love PhysicsPro</h2>
-                <p class="section-subtitle">Scientifically proven methods to boost your physics performance</p>
+                <p class="section-subtitle">A powerful, modern approach to mastering physics concepts.</p>
             </div>
-
-            <div class="benefits-grid">
-                <div class="benefit-card glass-card">
-                    <div class="benefit-icon">⚡</div>
-                    <h3>Lightning Fast Revision</h3>
-                    <p>Review entire chapters in minutes, not hours. Perfect for last-minute exam preparation and quick
-                        refreshers.</p>
-                </div>
-                <div class="benefit-card glass-card">
-                    <div class="benefit-icon">🧠</div>
-                    <h3>Enhanced Memory Retention</h3>
-                    <p>Active recall techniques proven to improve long-term retention by up to 300% compared to
-                        traditional reading.</p>
-                </div>
-                <div class="benefit-card glass-card">
-                    <div class="benefit-icon">🎯</div>
-                    <h3>Learn-More Feature</h3>
-                    <p>Deep dive into complex topics with our Learn-More feature. Not just simple flashcards, but also a
-                        deep dive into the topics.</p>
-                </div>
-                <div class="benefit-card glass-card">
-                    <div class="benefit-icon">📝</div>
-                    <h3>JEE Use Cases</h3>
-                    <p>Provides focus on question patterns asked on the topic in the exam. JEE Relevance section in the
-                        end of every concept.</p>
-                </div>
-                <div class="benefit-card glass-card">
-                    <div class="benefit-icon">📱</div>
-                    <h3>Study Anywhere</h3>
-                    <p>Access your flashcards on any device. Study during commute, breaks, or wherever you have a few
-                        spare minutes.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section id="testimonials" class="section">
-        <div class="section-container">
-            <div class="section-header">
-                <h2 class="section-title">Success Stories</h2>
-                <p class="section-subtitle">Join thousands of students who've improved their physics grades</p>
-            </div>
-
-            <div class="testimonials-grid">
-                <div class="testimonial-card glass-card">
-                    <p class="testimonial-quote">"These flashcards are incredible! My physics score improved by 25% in
-                        just one month. The content is so well-organized and easy to memorize."</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">AS</div>
-                        <div class="author-info">
-                            <h4>Anjali Singh</h4>
-                            <p>Class 12, CBSE Board</p>
-                        </div>
+            <div class="benefits-showcase">
+                <div class="benefit-item">
+                    <div class="benefit-icon-large">⚡</div>
+                    <div class="benefit-text">
+                        <h3>Lightning Fast Revision</h3>
+                        <p>Review entire chapters in minutes, not hours. Our concise flashcards are perfect for
+                            last-minute exam preparation and quick refreshers, ensuring you're always ready.</p>
                     </div>
                 </div>
-                <div class="testimonial-card glass-card">
-                    <p class="testimonial-quote">"Finally, a study resource that actually works! I used to spend hours
-                        making my own notes. PhysicsPro saved me so much time and the quality is outstanding."</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">RV</div>
-                        <div class="author-info">
-                            <h4>Rohan Verma</h4>
-                            <p>JEE Aspirant, Grade 12</p>
-                        </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon-large">🧠</div>
+                    <div class="benefit-text">
+                        <h3>Enhanced Memory Retention</h3>
+                        <p>Built on the principles of active recall, our method is scientifically proven to improve
+                            long-term memory by up to 300% compared to passive reading.</p>
                     </div>
                 </div>
-                <div class="testimonial-card glass-card">
-                    <p class="testimonial-quote">"The best investment I made for my board exams. Modern physics and
-                        optics became so much easier to understand and remember with these flashcards."</p>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">PK</div>
-                        <div class="author-info">
-                            <h4>Priya Krishnan</h4>
-                            <p>Class 11, State Board</p>
-                        </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon-large">🎯</div>
+                    <div class="benefit-text">
+                        <h3>Deeper Understanding with "Learn More"</h3>
+                        <p>Go beyond simple definitions. Our "Learn-More" feature provides deep dives into complex
+                            topics, complete with formulas, derivations, and worked examples.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon-large">📝</div>
+                    <div class="benefit-text">
+                        <h3>Exam-Focused JEE Use Cases</h3>
+                        <p>Every concept includes a dedicated "JEE Relevance" section, highlighting question patterns
+                            and applications frequently seen in competitive exams.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon-large">📱</div>
+                    <div class="benefit-text">
+                        <h3>Study Anywhere, Anytime</h3>
+                        <p>Your entire physics syllabus, right in your pocket. Access your flashcards on any device and
+                            turn any spare moment—your commute, a break—into a productive study session.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Pricing Section -->
     <section id="pricing" class="section">
         <div class="section-container">
             <div class="section-header">
                 <h2 class="section-title">Unlock Your Physics Potential</h2>
                 <p class="section-subtitle">One-time payment, lifetime access to all content</p>
             </div>
-
             <div class="pricing-card glass-card">
                 <div class="pricing-badge">25% OFF</div>
                 <h3 class="pricing-title">PhysicsPro Complete</h3>
                 <div class="price">₹999</div>
                 <p class="price-subtitle">One-time payment • Lifetime access</p>
-
                 <ul class="features-list">
-                    <li>
-                        <span class="check-icon">✓</span>
-                        Complete 11th & 12th Grade Syllabus
-                    </li>
-                    <li>
-                        <span class="check-icon">✓</span>
-                        Very High-Quality Flashcards
-                    </li>
-                    <li>
-                        <span class="check-icon">✓</span>
-                        Constant Updates & Improvements
-                    </li>
-                    <li>
-                        <span class="check-icon">✓</span>
-                        Learn-More deep dives with formulas & worked examples
-                    </li>
-                    <li>
-                        <span class="check-icon">✓</span>
-                        JEE Use Cases for every topic
-                    </li>
-                    <li>
-                        <span class="check-icon">✓</span>
-                        24/7 Access on All Devices
-                    </li>
+                    <li><span class="check-icon">✓</span> Complete 11th & 12th Grade Syllabus</li>
+                    <li><span class="check-icon">✓</span> Very High-Quality Flashcards</li>
+                    <li><span class="check-icon">✓</span> Constant Updates & Improvements</li>
+                    <li><span class="check-icon">✓</span> Learn-More deep dives with formulas & worked examples</li>
+                    <li><span class="check-icon">✓</span> JEE Use Cases for every topic</li>
+                    <li><span class="check-icon">✓</span> 24/7 Access on All Devices</li>
                 </ul>
-
-                <a href="Form.html" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                <a href="Form.html" class="btn btn-primary" style="width: 100%;">
                     🚀 Start Mastering Physics Now
                 </a>
             </div>
         </div>
     </section>
-    <!-- Future Updates Section -->
+
     <section id="updates" class="section">
         <div class="section-container">
             <div class="section-header">
-                <h2 class="section-title">What's Coming Next?</h2>
-                <p class="section-subtitle">We are constantly improving PhysicsPro. Here's a sneak peek at upcoming
-                    features and chapters.</p>
+                <h2 class="section-title">More From Us</h2>
+                <p class="section-subtitle">We're constantly improving your learning experience. Here's a sneak peek at
+                    what's coming next.</p>
             </div>
-            <div class="benefits-grid">
-                <div class="benefit-card glass-card">
-                    <div class="benefit-icon">🆕</div>
-                    <h3>New Chapters</h3>
-                    <p>Additional chapters for competitive exams like JEE & NEET, including advanced topics and practice
-                        sets.</p>
+            <div class="roadmap-container">
+                <div class="roadmap-line"></div>
+                <div class="roadmap-item">
+                    <div class="roadmap-content glass-card">
+                        <div class="roadmap-header">
+                            <h3><span class="roadmap-icon">📷</span> Images & Diagrams</h3>
+                            <span class="roadmap-status in-progress">In Progress</span>
+                        </div>
+                        <p>High-quality images and diagrams to help visualize complex concepts, coming soon to all
+                            flashcards.</p>
+                    </div>
                 </div>
-                <div class="benefit-card glass-card">
-                    <div class="benefit-icon">💡</div>
-                    <h3>Interactive Quizzes</h3>
-                    <p>Test your knowledge with built-in quizzes and instant feedback to help you master every concept.
-                    </p>
+                <div class="roadmap-item">
+                    <div class="roadmap-content glass-card">
+                        <div class="roadmap-header">
+                            <h3><span class="roadmap-icon">💡</span> Interactive Quizzes</h3>
+                            <span class="roadmap-status in-progress">In Progress</span>
+                        </div>
+                        <p>Test your knowledge with chapter-wise quizzes and instant feedback to help you master every
+                            concept.</p>
+                    </div>
                 </div>
-                <div class="benefit-card glass-card">
-                    <div class="benefit-icon">📊</div>
-                    <h3>Progress Tracking</h3>
-                    <p>Track your learning progress, strengths, and areas for improvement with smart analytics.</p>
+                <div class="roadmap-item">
+                    <div class="roadmap-content glass-card">
+                        <div class="roadmap-header">
+                            <h3><span class="roadmap-icon">📗</span> Multi-Subject Formula Sheets</h3>
+                            <span class="roadmap-status planned">Planned</span>
+                        </div>
+                        <p>Concise formula sheets for PHYSICS, CHEMISTRY & MATHS for quick revision and easy reference.
+                        </p>
+                    </div>
                 </div>
-                <div class="benefit-card glass-card">
-                    <div class="benefit-icon">🌐</div>
-                    <h3>Community Features</h3>
-                    <p>Connect with other learners, share tips, and get your doubts solved in our upcoming student
-                        community.</p>
+                <div class="roadmap-item">
+                    <div class="roadmap-content glass-card">
+                        <div class="roadmap-header">
+                            <h3><span class="roadmap-icon">🧪</span> Chemistry Surprise</h3>
+                            <span class="roadmap-status exploring">Exploring</span>
+                        </div>
+                        <p>Exciting new chemistry content and features are on the way! Your learning toolkit is about to
+                            expand.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
-    <!-- FAQ Section -->
+
     <section id="faq" class="section">
         <div class="section-container">
             <div class="section-header">
                 <h2 class="section-title">Frequently Asked Questions</h2>
                 <p class="section-subtitle">Everything you need to know about PhysicsPro</p>
             </div>
-
             <div class="faq-container">
                 <div class="faq-item">
                     <button class="faq-question">
@@ -1064,12 +1540,10 @@
                         <span class="faq-icon">+</span>
                     </button>
                     <div class="faq-answer">
-                        <p>You'll receive both an interactive web version (accessible on any device) and a high-quality
-                            PDF version that you can download and print. The web version includes animations and
-                            interactive features for enhanced learning.</p>
+                        <p>You'll receive the flashcards in an interactive web version (accessible on any device). The
+                            web version includes animations and interactive features for enhanced learning.</p>
                     </div>
                 </div>
-
                 <div class="faq-item">
                     <button class="faq-question">
                         Is this really a one-time purchase?
@@ -1077,10 +1551,10 @@
                     </button>
                     <div class="faq-answer">
                         <p>Yes! Pay once and get lifetime access to all current and future content. No subscriptions, no
-                            recurring fees. You'll also receive all future updates and new chapters completely free.</p>
+                            recurring fees. NOTE: Updates are included at no extra cost while a new product may have
+                            charges.</p>
                     </div>
                 </div>
-
                 <div class="faq-item">
                     <button class="faq-question">
                         Can I try before buying?
@@ -1089,43 +1563,40 @@
                     <div class="faq-answer">
                         <p>Absolutely! Check out our free sample chapter "Units and Dimensions" to experience the
                             quality firsthand. We also offer a 7-day money-back guarantee if you're not completely
-                            satisfied.</p>
+                            satisfied. <a href="#features">Here</a></p>
                     </div>
                 </div>
-
                 <div class="faq-item">
                     <button class="faq-question">
                         How quickly will I receive access?
                         <span class="faq-icon">+</span>
                     </button>
                     <div class="faq-answer">
-                        <p>Instantly! Within seconds of your purchase, you'll receive an email with your login
-                            credentials and download links. Start studying immediately on any device.</p>
+                        <p>Almost instantly! Within seconds of your purchase, you'll receive access and link to the pro
+                            version. Start studying immediately on any device.</p>
                     </div>
                 </div>
-
                 <div class="faq-item">
                     <button class="faq-question">
                         Which curriculum does this cover?
                         <span class="faq-icon">+</span>
                     </button>
                     <div class="faq-answer">
-                        <p>Our flashcards cover CBSE, NCERT, and most state board curricula for grades 11 & 12. The
-                            content is also excellent preparation for JEE, NEET, and other competitive exams.</p>
+                        <p>The content is excellent preparation of entrance exams such as JEE & NEET. Also our
+                            flashcards cover CBSE, NCERT, and most state board curricula for grades 11 & 12.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <p>&copy; 2024 PhysicsPro. All rights reserved. Made with ⚡ for physics students worldwide.</p>
+            <p>&copy; 2024 PhysicsPro. All rights reserved. Made with <span class="heart">&hearts;</span> for physics
+                students worldwide.</p>
         </div>
     </footer>
 
-    <!-- Premium Modal -->
     <div id="premium-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close">&times;</button>
@@ -1133,7 +1604,7 @@
             <h3 class="modal-title">Unlock All Chapters</h3>
             <p class="modal-subtitle">Get instant access to all 24 chapters and start acing your physics exams today.
                 Your success is just one click away!</p>
-            <a href="Form.html" class="btn btn-primary" style="width: 100%; justify-content: center;" id="modal-cta">
+            <a href="Form.html" class="btn btn-primary" style="width: 100%;" id="modal-cta">
                 🚀 Get Full Access Now
             </a>
         </div>
@@ -1141,192 +1612,172 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize animations
+            // Enhanced hero intro animations
             anime.timeline({
                 easing: 'easeOutExpo',
-                duration: 1000
+                duration: 1200
             })
                 .add({
                     targets: '.hero-badge',
                     opacity: [0, 1],
-                    translateY: [30, 0],
-                    duration: 800
+                    translateY: [40, 0],
+                    scale: [0.9, 1],
+                    duration: 900
                 })
                 .add({
                     targets: '.hero h1',
                     opacity: [0, 1],
-                    translateY: [50, 0],
-                    duration: 1000
+                    translateY: [60, 0],
+                    duration: 1200
                 }, '-=600')
                 .add({
                     targets: '.hero-subtitle',
                     opacity: [0, 1],
-                    translateY: [30, 0],
-                    duration: 800
+                    translateY: [40, 0],
+                    duration: 900
                 }, '-=400')
                 .add({
                     targets: '.hero-cta .btn',
                     opacity: [0, 1],
-                    translateY: [30, 0],
-                    delay: anime.stagger(100),
-                    duration: 600
+                    translateY: [40, 0],
+                    scale: [0.9, 1],
+                    delay: anime.stagger(120),
+                    duration: 700
                 }, '-=200');
 
-            // Scroll animations for cards
+            // Enhanced scroll animation logic
             const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -100px 0px'
+                threshold: 0.12,
+                rootMargin: '0px 0px -80px 0px'
             };
 
-            const observer = new IntersectionObserver((entries) => {
+            const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        anime({
-                            targets: entry.target,
-                            opacity: [0, 1],
-                            translateY: [50, 0],
-                            scale: [0.9, 1],
-                            duration: 800,
-                            easing: 'easeOutCubic'
-                        });
+                        entry.target.classList.add('is-visible');
                         observer.unobserve(entry.target);
                     }
                 });
             }, observerOptions);
 
-            // Observe all cards
-            document.querySelectorAll('.glass-card, .benefit-card, .testimonial-card').forEach(card => {
-                card.style.opacity = '0';
-                observer.observe(card);
+            const targets = document.querySelectorAll('.glass-card, .benefit-item, .roadmap-item');
+            targets.forEach(target => {
+                if (!target.closest('.benefit-item, .roadmap-item')) {
+                    target.style.opacity = '0';
+                }
+                observer.observe(target);
             });
+
+            // Observer for cards that need internal list animations (Tweak 2)
+            const cardObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Animate the card container itself
+                        anime({
+                            targets: entry.target,
+                            opacity: [0, 1],
+                            translateY: [60, 0],
+                            scale: [0.95, 1],
+                            duration: 1000,
+                            easing: 'easeOutCubic',
+                            // On completion, animate the list items inside
+                            complete: () => {
+                                let listItems = null;
+                                if (entry.target.classList.contains('pricing-card')) {
+                                    listItems = entry.target.querySelectorAll('.features-list li');
+                                } else if (entry.target.classList.contains('chapter-card')) {
+                                    listItems = entry.target.querySelectorAll('.chapter-list .chapter-item');
+                                }
+
+                                if (listItems) {
+                                    listItems.forEach(item => item.classList.add('is-visible'));
+                                    anime({
+                                        targets: listItems,
+                                        opacity: [0, 1],
+                                        translateX: [-20, 0],
+                                        duration: 600,
+                                        easing: 'easeOutCubic',
+                                        delay: anime.stagger(70)
+                                    });
+                                }
+                            }
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.chapter-card, .pricing-card').forEach(card => cardObserver.observe(card));
 
             // Premium Modal Logic
             const modal = document.getElementById('premium-modal');
-            const modalContent = modal.querySelector('.modal-content');
             const premiumTriggers = document.querySelectorAll('.premium-trigger, .premium-badge');
             const closeButton = modal.querySelector('.modal-close');
-            const ctaButton = document.getElementById('modal-cta');
 
             const openModal = () => {
                 modal.style.display = 'flex';
-                anime({
-                    targets: modal,
-                    opacity: [0, 1],
-                    duration: 300,
-                    easing: 'easeInOutQuad'
-                });
-                anime({
-                    targets: modalContent,
-                    scale: [0.8, 1],
-                    opacity: [0, 1],
-                    duration: 400,
-                    easing: 'easeOutBack'
-                });
+                anime({ targets: modal, opacity: [0, 1], duration: 400, easing: 'easeOutCubic' });
+                anime({ targets: '.modal-content', scale: [0.7, 1], opacity: [0, 1], duration: 500, easing: 'easeOutBack' });
             };
 
             const closeModal = () => {
-                anime({
-                    targets: modal,
-                    opacity: [1, 0],
-                    duration: 300,
-                    easing: 'easeInOutQuad',
-                    complete: () => {
-                        modal.style.display = 'none';
-                    }
-                });
-                anime({
-                    targets: modalContent,
-                    scale: [1, 0.8],
-                    opacity: [1, 0],
-                    duration: 300,
-                    easing: 'easeInBack'
-                });
+                anime({ targets: modal, opacity: 0, duration: 300, easing: 'easeInCubic', complete: () => modal.style.display = 'none' });
+                anime({ targets: '.modal-content', scale: 0.7, opacity: 0, duration: 300, easing: 'easeInBack' });
             };
 
-            premiumTriggers.forEach(trigger => {
-                trigger.addEventListener('click', openModal);
-            });
-
+            premiumTriggers.forEach(trigger => trigger.addEventListener('click', openModal));
             closeButton.addEventListener('click', closeModal);
-            ctaButton.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) closeModal();
-            });
-
-            // FAQ Accordion
+            // Enhanced FAQ Accordion
             document.querySelectorAll('.faq-question').forEach(question => {
                 question.addEventListener('click', () => {
                     const faqItem = question.parentElement;
                     const answer = faqItem.querySelector('.faq-answer');
                     const isActive = faqItem.classList.contains('active');
 
-                    // Close all other FAQ items
                     document.querySelectorAll('.faq-item.active').forEach(item => {
                         if (item !== faqItem) {
                             item.classList.remove('active');
-                            item.querySelector('.faq-answer').style.maxHeight = '0';
+                            anime({ targets: item.querySelector('.faq-answer'), maxHeight: 0, duration: 300, easing: 'easeInCubic' });
                         }
                     });
 
-                    // Toggle current item
-                    if (!isActive) {
-                        faqItem.classList.add('active');
-                        answer.style.maxHeight = answer.scrollHeight + 'px';
-                    } else {
-                        faqItem.classList.remove('active');
-                        answer.style.maxHeight = '0';
-                    }
+                    faqItem.classList.toggle('active');
+                    anime({ targets: answer, maxHeight: isActive ? 0 : answer.scrollHeight, duration: 400, easing: 'easeInOutCubic' });
                 });
             });
 
-            // Smooth scrolling for navigation links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
+            // Auto-hiding header and parallax scroll handler
+            const header = document.querySelector('.header');
+            let lastScrollTop = 0;
+            let ticking = false;
 
-            // Floating animation for benefit cards
-            document.querySelectorAll('.benefit-card').forEach((card, index) => {
-                anime({
-                    targets: card,
-                    translateY: [0, -10, 0],
-                    duration: 3000 + (index * 200),
-                    loop: true,
-                    easing: 'easeInOutSine',
-                    delay: index * 400
-                });
-            });
-
-            // Parallax effect for background
             window.addEventListener('scroll', () => {
-                const scrolled = window.pageYOffset;
-                const rate = scrolled * -0.5;
-                const bgAnimation = document.querySelector('.bg-animation');
-                if (bgAnimation) {
-                    bgAnimation.style.transform = `translateY(${rate}px)`;
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        // Auto-hide header logic
+                        if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
+                            header.classList.add('header-hidden');
+                        } else {
+                            header.classList.remove('header-hidden');
+                        }
+                        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+                        // Parallax effect logic
+                        const rate = scrollTop * -0.3;
+                        const bgAnimation = document.querySelector('.bg-animation');
+                        if (bgAnimation) {
+                            bgAnimation.style.transform = `translateY(${rate}px) scale(1.05)`;
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
                 }
             });
 
-            // Add loading animations to pricing card
-            setTimeout(() => {
-                anime({
-                    targets: '.pricing-card .features-list li',
-                    opacity: [0, 1],
-                    translateX: [-30, 0],
-                    delay: anime.stagger(100),
-                    duration: 600,
-                    easing: 'easeOutQuad'
-                });
-            }, 2000);
         });
     </script>
 </body>
