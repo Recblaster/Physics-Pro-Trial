@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Get Access to PhysicsPro</title>
-    <link rel="stylesheet" href="style.css"> <!-- Or link to an external CSS file -->
+    <link rel="stylesheet" href="style.css">
     <style>
-        /* A simplified version of your styles for the form */
+        /* Your original styles are perfect */
         body {
             background: #0f0f23;
             color: white;
@@ -16,7 +16,6 @@
             min-height: 100vh;
             font-family: 'Inter', sans-serif;
         }
-
         .form-container {
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(20px);
@@ -27,16 +26,8 @@
             max-width: 500px;
             text-align: center;
         }
-
-        h1 {
-            margin-bottom: 20px;
-        }
-
-        p {
-            color: #a1a1aa;
-            margin-bottom: 30px;
-        }
-
+        h1 { margin-bottom: 20px; }
+        p { color: #a1a1aa; margin-bottom: 30px; }
         input {
             width: 100%;
             padding: 15px;
@@ -47,12 +38,7 @@
             color: white;
             font-size: 16px;
         }
-
-        input:focus {
-            outline: none;
-            border-color: #6366f1;
-        }
-
+        input:focus { outline: none; border-color: #6366f1; }
         .btn {
             padding: 15px 24px;
             border-radius: 12px;
@@ -72,20 +58,32 @@
     <div class="form-container">
         <h1>You're Almost There!</h1>
         <p>Enter your details below. You'll be redirected to WhatsApp to confirm your request with us.</p>
-        
-        <!-- CHANGE #1: The <form> tag is now pointing to our Netlify Function -->
-        <form id="contact-form" action="/.netlify/functions/submit-whatsapp" method="POST">
-            
-            <!-- CHANGE #2: Added 'name' attributes to the inputs so the function can read the data -->
-            <input type="email" id="email" name="email" placeholder="Enter your Email ID" required>
-            <input type="tel" id="phone" name="phone" placeholder="Enter your Phone Number (for WhatsApp)" required>
-            
+        <form id="contact-form">
+            <input type="email" id="email" placeholder="Enter your Email ID" required>
+            <input type="tel" id="phone" placeholder="Enter your Phone Number (for WhatsApp)" required>
             <button type="submit" class="btn">Confirm and Proceed to WhatsApp</button>
         </form>
     </div>
 
-    <!-- CHANGE #3: The entire <script> block has been REMOVED.
-         The Netlify function now handles the redirect logic. -->
+    <!-- The original JavaScript that works every time -->
+    <script>
+        const contactForm = document.getElementById('contact-form');
 
+        contactForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+
+            const yourNumber = '917304301192'; // Your WhatsApp Number
+
+            let message = `Hello! I'm interested in buying PhysicsPro.\n\nMy Details:\nEmail: ${email}\nNumber: ${phone}`;
+            let encodedMessage = encodeURIComponent(message);
+            const whatsappURL = `https://wa.me/${yourNumber}?text=${encodedMessage}`;
+
+            window.location.href = whatsappURL;
+        });
+    </script>
 </body>
+
 </html>
