@@ -9,7 +9,7 @@ This repository contains the source code for the public landing page of **Physic
 
 To see the live version of our trial site and explore the free chapters, please visit:
 
-**[https://your-public-netlify-site.netlify.app](https://your-public-netlify-site.netlify.app)**
+**[https://entrancepro.netlify.app](https://entrancepro.netlify.app)**
 <!-- IMPORTANT: Replace this with your actual public Netlify link! -->
 
 ---
